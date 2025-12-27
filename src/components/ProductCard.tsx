@@ -72,7 +72,7 @@ export function ProductCard({ product }: ProductCardProps) {
               className="w-full"
             >
               <Eye className="w-4 h-4 mr-2" />
-              Voir détails
+              Détails
             </Button>
           </div>
         </div>
@@ -102,7 +102,7 @@ export function ProductCard({ product }: ProductCardProps) {
           {/* Add to Cart Button */}
           <Button className="w-full" onClick={handleAddToCart}>
             <ShoppingCart className="w-4 h-4 mr-2" />
-            Ajouter au panier
+            Au panier
           </Button>
         </div>
       </article>
