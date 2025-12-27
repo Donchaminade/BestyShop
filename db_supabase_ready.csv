@@ -1,0 +1,14 @@
+name,description,price,promo_price,promo_active,image_url,category,created_at,updated_at
+Maillot Real Madrid Home,Version joueur technologie HEAT.RDY,15000,13500,true,https://i.ibb.co/L6kK7Yy/real-home-24-25.webp,Maillots,2025-12-25T12:00:00Z,2025-12-25T12:00:00Z
+Maillot PSG Away,Design audacieux confort optimal,14000,12500,true,https://i.ibb.co/HhzQ2xW/psg-away-24-25.webp,Maillots,2025-12-25T12:00:00Z,2025-12-25T12:00:00Z
+Maillot Jordan x PSG,Collection Jordan style urbain,16000,,false,https://i.ibb.co/P9gLnsF/jordan-psg.webp,Maillots,2025-12-25T12:00:00Z,2025-12-25T12:00:00Z
+Maillot Liverpool Home,Technologie Dri-FIT ADV,14500,,false,https://i.ibb.co/YhYp0ff/liverpool-home-24-25.webp,Maillots,2025-12-25T12:00:00Z,2025-12-25T12:00:00Z
+Maillot Manchester United Home,Le rouge iconique des Red Devils,14500,,false,https://i.ibb.co/8Yj214z/man-utd-home-24-25.webp,Maillots,2025-12-25T12:00:00Z,2025-12-25T12:00:00Z
+Maillot France 98 Retro,La première étoile un maillot de légende,25000,,false,https://i.ibb.co/yQhL22p/france-98.webp,Retro,2025-12-25T12:00:00Z,2025-12-25T12:00:00Z
+Maillot Bresil 2002 Retro,Le Fenomeno au sommet du monde,28000,25000,true,https://i.ibb.co/Smm5QzM/brazil-2002.webp,Retro,2025-12-25T12:00:00Z,2025-12-25T12:00:00Z
+Nike Phantom,Pour une précision dévastatrice,35000,,false,https://i.ibb.co/3zdvVwz/crampon-nike-phantom.webp,Chaussures,2025-12-25T12:00:00Z,2025-12-25T12:00:00Z
+Adidas Predator,Contrôle absolu languette iconique,38000,35000,true,https://i.ibb.co/qD4Mh7N/crampon-adidas-predator.webp,Chaussures,2025-12-25T12:00:00Z,2025-12-25T12:00:00Z
+Ballon Basket Spalding,Grip exceptionnel pour intérieur extérieur,15000,,false,https://i.ibb.co/2N3w9Vb/spalding-ball.webp,Accessoires,2025-12-25T12:00:00Z,2025-12-25T12:00:00Z
+Gants de Gardien,Grip et protection pour les derniers remparts,18000,,false,https://i.ibb.co/Yd4B2gY/equip-gants.webp,Accessoires,2025-12-25T12:00:00Z,2025-12-25T12:00:00Z
+Protège-tibias,Protection légère et discrète,9000,7500,true,https://i.ibb.co/f49bVnh/equip-protege-tibia.webp,Accessoires,2022-12-25T12:00:00Z,2022-12-25T12:00:00Z
+Sac de Sport,Compartiment sec humide spacieux,16000,,false,https://i.ibb.co/dKGLW12/sac-sport.webp,Accessoires,2022-12-25T12:00:00Z,2022-12-25T12:00:00Z
