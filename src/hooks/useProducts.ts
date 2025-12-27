@@ -63,7 +63,7 @@ export function useCreateProduct() {
     mutationFn: async (product: ProductFormData) => {
       const { data, error } = await supabase
         .from('products')
-        .insert([product])
+        .insert([{ ...product, category: product.category as ProductCategory }])
         .select()
         .single();
       
@@ -88,7 +88,7 @@ export function useUpdateProduct() {
     mutationFn: async ({ id, ...product }: ProductFormData & { id: string }) => {
       const { data, error } = await supabase
         .from('products')
-        .update(product)
+        .update({ ...product, category: product.category as ProductCategory })
         .eq('id', id)
         .select()
         .single();

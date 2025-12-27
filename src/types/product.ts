@@ -1,4 +1,4 @@
-export type ProductCategory = 'Maquillage' | 'Soins Visage' | 'Soins Corps' | 'Parfums' | 'Accessoires Beauté' | 'Cheveux' | '_NEW_CATEGORY_';
+export type ProductCategory = 'Maquillage' | 'Soins Visage' | 'Soins Corps' | 'Parfums' | 'Accessoires Beauté' | 'Cheveux';
 
 export interface Product {
   id: string;
@@ -20,5 +20,5 @@ export interface ProductFormData {
   promo_price: number | null;
   promo_active: boolean;
   image_url: string;
-  category: ProductCategory;
+  category: string; // Changed to string to accommodate '_NEW_CATEGORY_' before final conversion
 }
