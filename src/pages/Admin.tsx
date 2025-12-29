@@ -208,27 +208,61 @@ export default function AdminProductsPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-16">Image</TableHead>
                 <TableHead>Nom</TableHead>
-                <TableHead>Catégorie</TableHead>
+                <TableHead className="hidden md:table-cell">Catégorie</TableHead>
                 <TableHead>Prix</TableHead>
+                <TableHead className="hidden sm:table-cell">Promo</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {productsLoading ? (
-                <TableRow>
-                  <TableCell colSpan={4}>
-                    <Skeleton className="h-6 w-full" />
-                  </TableCell>
-                </TableRow>
+                Array.from({ length: 5 }).map((_, i) => (
+                  <TableRow key={i}>
+                    <TableCell><Skeleton className="w-12 h-12 rounded" /></TableCell>
+                    <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+                    <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-20" /></TableCell>
+                    <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                    <TableCell className="hidden sm:table-cell"><Skeleton className="h-4 w-16" /></TableCell>
+                    <TableCell><Skeleton className="h-8 w-20 ml-auto" /></TableCell>
+                  </TableRow>
+                ))
               ) : filteredProducts.length ? (
                 filteredProducts.map((p) => (
                   <TableRow key={p.id}>
-                    <TableCell>{p.name}</TableCell>
                     <TableCell>
+                      <img
+                        src={p.image_url || '/placeholder.svg'}
+                        alt={p.name}
+                        className="w-12 h-12 object-cover rounded"
+                      />
+                    </TableCell>
+                    <TableCell className="font-medium max-w-[200px] truncate">
+                      {p.name}
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell">
                       <Badge variant="outline">{p.category}</Badge>
                     </TableCell>
-                    <TableCell>{formatPrice(p.price)}</TableCell>
+                    <TableCell>
+                      <div className="flex flex-col">
+                        <span className={p.promo_active ? 'text-muted-foreground line-through text-xs' : ''}>
+                          {formatPrice(p.price)}
+                        </span>
+                        {p.promo_active && p.promo_price && (
+                          <span className="text-primary font-medium">
+                            {formatPrice(p.promo_price)}
+                          </span>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell">
+                      {p.promo_active ? (
+                        <Badge className="bg-promo text-promo-foreground">Promo</Badge>
+                      ) : (
+                        <Badge variant="secondary">-</Badge>
+                      )}
+                    </TableCell>
                     <TableCell className="text-right">
                       <Button
                         size="icon"
@@ -250,7 +284,7 @@ export default function AdminProductsPage() {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center">
+                  <TableCell colSpan={6} className="text-center">
                     Aucun produit
                   </TableCell>
                 </TableRow>
