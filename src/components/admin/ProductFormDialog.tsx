@@ -377,7 +377,7 @@ export function ProductFormDialog({ open, onOpenChange, product, isReadOnly = fa
             />
           </div>
 
-          {/* Submit */}
+          {/* Submit / Close */}
           <div className="flex gap-3 pt-4">
             <Button
               type="button"
@@ -385,12 +385,14 @@ export function ProductFormDialog({ open, onOpenChange, product, isReadOnly = fa
               className="flex-1"
               onClick={() => handleOpenChange(false)}
             >
-              Annuler
+              {isReadOnly ? 'Fermer' : 'Annuler'}
             </Button>
-            <Button type="submit" className="flex-1" disabled={isLoading}>
-              {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              {isEditing ? 'Mettre à jour' : 'Créer le produit'}
-            </Button>
+            {!isReadOnly && ( // Hide submit button in read-only
+              <Button type="submit" className="flex-1" disabled={isLoading}>
+                {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                {isEditing ? 'Mettre à jour' : 'Créer le produit'}
+              </Button>
+            )}
           </div>
         </form>
       </DialogContent>

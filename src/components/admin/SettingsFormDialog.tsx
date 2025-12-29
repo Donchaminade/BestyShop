@@ -31,6 +31,7 @@ export function SettingsFormDialog({ open, onOpenChange }: SettingsFormDialogPro
     logo_url: '',
     whatsapp_number: '',
     presentation_video_url: '',
+    primary_color: '#32CD32', // Default primary color
   });
   const [uploadingLogo, setUploadingLogo] = useState(false); // Renamed for clarity
   const [uploadingVideo, setUploadingVideo] = useState(false); // New state for video upload
@@ -44,6 +45,7 @@ export function SettingsFormDialog({ open, onOpenChange }: SettingsFormDialogPro
         logo_url: currentSettings.logo_url,
         whatsapp_number: currentSettings.whatsapp_number,
         presentation_video_url: currentSettings.presentation_video_url,
+        primary_color: currentSettings.primary_color,
       });
       setLogoPreviewUrl(currentSettings.logo_url);
       setVideoPreviewUrl(currentSettings.presentation_video_url);
@@ -153,6 +155,10 @@ export function SettingsFormDialog({ open, onOpenChange }: SettingsFormDialogPro
     }
     if (!formData.presentation_video_url.trim()) {
         toast.error('L\'URL de la vidéo de présentation est requise');
+        return;
+    }
+    if (!formData.primary_color.trim()) { // Validate primary color
+        toast.error('La couleur principale est requise');
         return;
     }
 
@@ -295,6 +301,18 @@ export function SettingsFormDialog({ open, onOpenChange }: SettingsFormDialogPro
                     className="hidden"
                 />
                 </div>
+            </div>
+
+            {/* Primary Color */}
+            <div className="space-y-2">
+                <Label htmlFor="primary_color">Couleur principale *</Label>
+                <Input
+                id="primary_color"
+                type="color" // Color picker
+                value={formData.primary_color}
+                onChange={(e) => setFormData(prev => ({ ...prev, primary_color: e.target.value }))}
+                required
+                />
             </div>
 
             {/* WhatsApp Number */}

@@ -6,7 +6,12 @@
 
 @layer base {
   :root {
-    /* Dark sporty theme with neon green accents */
+    /* Dynamic Primary Color variables - Set by JavaScript */
+    --primary-dynamic-hsl: 324 100% 70%; /* Default pink HSL for --primary if JS not loaded */
+    --primary-dynamic-foreground-hsl: 220 20% 6%; /* Default foreground for primary if JS not loaded */
+    --primary-dynamic-light-hsl: 324 100% 80%; /* Default lighter primary for gradients if JS not loaded */
+
+    /* Base theme colors */
     --background: 220 20% 6%;
     --foreground: 0 0% 98%;
 
@@ -16,40 +21,38 @@
     --popover: 220 18% 10%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 324 100% 70%;
-    --primary-foreground: 220 20% 6%;
-
     --secondary: 220 16% 16%;
     --secondary-foreground: 0 0% 98%;
 
     --muted: 220 14% 18%;
     --muted-foreground: 220 10% 60%;
 
-    --accent: 324 100% 70%;
-    --accent-foreground: 220 20% 6%;
+    /* Main color palette derived from dynamic primary */
+    --primary: var(--primary-dynamic-hsl);
+    --primary-foreground: var(--primary-dynamic-foreground-hsl);
+    --accent: var(--primary);
+    --accent-foreground: var(--primary-foreground);
+    --ring: var(--primary);
+    --success: var(--primary); /* Success can also follow primary */
+    --promo: var(--primary); /* Promo can also follow primary */
+    --promo-foreground: var(--primary-foreground);
+
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
 
     --border: 220 14% 20%;
     --input: 220 14% 20%;
-    --ring: 324 100% 70%;
 
     --radius: 0.75rem;
 
-    /* Custom colors */
-    --promo: 38 92% 50%;
-    --promo-foreground: 220 20% 6%;
-    --success: 324 100% 70%;
-    --warning: 38 92% 50%;
-
     /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(324 100% 70% / 0.15), hsl(220 20% 6%));
-    --gradient-card: linear-gradient(180deg, hsl(220 18% 12%), hsl(220 18% 8%));
-    --gradient-glow: radial-gradient(ellipse at center, hsl(142 71% 45% / 0.2), transparent 70%);
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary) / 0.15), hsl(var(--background)));
+    --gradient-card: linear-gradient(180deg, hsl(var(--card-background)), hsl(var(--card-background) / 0.5));
+    --gradient-glow: radial-gradient(ellipse at center, hsl(var(--primary) / 0.2), transparent 70%);
 
     /* Shadows */
-    --shadow-glow: 0 0 40px hsl(324 100% 70% / 0.3);
+    --shadow-glow: 0 0 40px hsl(var(--primary) / 0.3);
     --shadow-card: 0 8px 32px hsl(0 0% 0% / 0.4);
     --shadow-elevated: 0 20px 60px hsl(0 0% 0% / 0.5);
 
@@ -57,14 +60,15 @@
     --font-display: 'Bebas Neue', sans-serif;
     --font-body: 'Inter', sans-serif;
 
-    --sidebar-background: 220 18% 8%;
-    --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 324 100% 70%;
-    --sidebar-primary-foreground: 220 20% 6%;
-    --sidebar-accent: 220 14% 16%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 220 14% 20%;
-    --sidebar-ring: 142 71% 45%;
+    /* Sidebar specific variables */
+    --sidebar-background: var(--card);
+    --sidebar-foreground: var(--foreground);
+    --sidebar-primary: var(--primary);
+    --sidebar-primary-foreground: var(--primary-foreground);
+    --sidebar-accent: var(--secondary);
+    --sidebar-accent-foreground: var(--secondary-foreground);
+    --sidebar-border: var(--border);
+    --sidebar-ring: var(--ring);
   }
 }
 
@@ -118,11 +122,11 @@
 
   .text-gradient {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(var(--primary)), hsl(324 100% 80%));
+    background-image: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
   }
 
   .glow-primary {
-    filter: drop-shadow(0 0 20px hsl(324 100% 70% / 0.5));
+    filter: drop-shadow(0 0 20px hsl(var(--primary) / 0.5));
   }
 
   .animate-float {
@@ -202,15 +206,15 @@
 @keyframes pulse-glow-button {
   0% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(255, 102, 196, 0.7); /* Using the pink color */
+    box-shadow: 0 0 0 0 hsl(var(--primary) / 0.7); /* Using dynamic primary color */
   }
   70% {
     transform: scale(1.05);
-    box-shadow: 0 0 0 20px rgba(255, 102, 196, 0);
+    box-shadow: 0 0 0 20px hsl(var(--primary) / 0);
   }
   100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(255, 102, 196, 0);
+    box-shadow: 0 0 0 0 hsl(var(--primary) / 0);
   }
 }
 
