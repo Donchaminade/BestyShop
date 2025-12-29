@@ -194,7 +194,7 @@ export function SettingsFormDialog({ open, onOpenChange }: SettingsFormDialogPro
                 id="shop_name"
                 value={formData.shop_name}
                 onChange={(e) => setFormData(prev => ({ ...prev, shop_name: e.target.value }))}
-                placeholder="BestyShop"
+                placeholder=""
                 required
                 />
             </div>
