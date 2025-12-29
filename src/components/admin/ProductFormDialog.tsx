@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Product, ProductFormData, ProductCategory } from '@/types/product';
 import { useCreateProduct, useUpdateProduct } from '@/hooks/useProducts';
 import { supabase } from '@/integrations/supabase/client';
@@ -30,9 +30,10 @@ interface ProductFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   product: Product | null;
+  isReadOnly?: boolean; // New prop for read-only mode
 }
 
-export function ProductFormDialog({ open, onOpenChange, product }: ProductFormDialogProps) {
+export function ProductFormDialog({ open, onOpenChange, product, isReadOnly = false }: ProductFormDialogProps) {
   const createProduct = useCreateProduct();
   const updateProduct = useUpdateProduct();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -53,6 +54,36 @@ export function ProductFormDialog({ open, onOpenChange, product }: ProductFormDi
 
   const isEditing = !!product;
 
+  useEffect(() => {
+    if (open && product) { // Only update form data if dialog is opened and product is provided
+      setFormData({
+        name: product.name,
+        description: product.description || '',
+        price: product.price,
+        promo_price: product.promo_price,
+        promo_active: product.promo_active,
+        image_url: product.image_url || '',
+        category: product.category,
+      });
+      setPreviewUrl(product.image_url || '');
+      // If editing an existing product whose category is not in predefined, set to 'Other' mode
+      if (!predefinedCategories.includes(product.category) && product.category !== '_NEW_CATEGORY_') {
+              setShowNewCategoryInput(true);
+              setNewCategoryName(product.category);
+              setFormData(prev => ({ ...prev, category: '_NEW_CATEGORY_' as ProductCategory }));
+            } else {
+              setShowNewCategoryInput(false);
+              setNewCategoryName('');
+              setFormData(prev => ({ ...prev, category: product.category })); // Ensure category is set correctly for predefined
+            }
+          } else if (open && !product) { // If opening for new product
+      resetForm();
+    }
+    // The resetForm() on close is explicitly handled by the parent component (Admin.tsx)
+    // in its handleProductFormClose function, which sets isProductFormOpen to false and calls resetForm
+  }, [open, product]);
+
+
   function resetForm() {
     setFormData({
       name: '',
@@ -69,36 +100,15 @@ export function ProductFormDialog({ open, onOpenChange, product }: ProductFormDi
   }
 
   function handleOpenChange(open: boolean) {
-          if (!open) {
-            resetForm();
-          } else if (product) {
-            setFormData({
-              name: product.name,
-              description: product.description || '',
-              price: product.price,
-              promo_price: product.promo_price,
-              promo_active: product.promo_active,
-              image_url: product.image_url || '',
-              category: product.category,
-            });
-            setPreviewUrl(product.image_url || '');
-            // If editing an existing product whose category is not in predefined, set to 'Other' mode
-            if (!predefinedCategories.includes(product.category) && product.category !== '_NEW_CATEGORY_') {
-              setShowNewCategoryInput(true);
-              setNewCategoryName(product.category);
-              setFormData(prev => ({ ...prev, category: '_NEW_CATEGORY_' as ProductCategory }));
-            } else {
-              setShowNewCategoryInput(false);
-              setNewCategoryName('');
-              setFormData(prev => ({ ...prev, category: product.category })); // Ensure category is set correctly for predefined
-            }
-          } else {
-            setShowNewCategoryInput(false);
-            setNewCategoryName('');
-          }    onOpenChange(open);
+    if (!open) { // Only reset form if dialog is closing
+      resetForm();
+    }
+    onOpenChange(open);
   }
 
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    if (isReadOnly) return; // Prevent upload in read-only mode
+
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -141,6 +151,7 @@ export function ProductFormDialog({ open, onOpenChange, product }: ProductFormDi
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (isReadOnly) return; // Prevent submission in read-only mode
 
     if (!formData.name.trim()) {
       toast.error('Le nom du produit est requis');
@@ -188,10 +199,10 @@ export function ProductFormDialog({ open, onOpenChange, product }: ProductFormDi
       <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-display text-2xl">
-            {isEditing ? 'Modifier le produit' : 'Nouveau produit'}
+            {isReadOnly ? 'Détails du produit' : (isEditing ? 'Modifier le produit' : 'Nouveau produit')}
           </DialogTitle>
           <DialogDescription>
-            {isEditing ? 'Mettez à jour les détails du produit.' : 'Créez un nouveau produit pour votre boutique.'}
+            {isReadOnly ? 'Affichage des détails du produit en lecture seule.' : (isEditing ? 'Mettez à jour les détails du produit.' : 'Créez un nouveau produit pour votre boutique.')}
           </DialogDescription>
         </DialogHeader>
 
@@ -201,7 +212,7 @@ export function ProductFormDialog({ open, onOpenChange, product }: ProductFormDi
             <Label>Image du produit</Label>
             <div 
               className="relative border-2 border-dashed border-border rounded-xl p-4 hover:border-primary/50 transition-colors cursor-pointer"
-              onClick={() => fileInputRef.current?.click()}
+              onClick={() => !isReadOnly && fileInputRef.current?.click()} // Disable click in read-only
             >
               {previewUrl ? (
                 <div className="relative aspect-video rounded-lg overflow-hidden">
@@ -210,17 +221,19 @@ export function ProductFormDialog({ open, onOpenChange, product }: ProductFormDi
                     alt="Preview" 
                     className="w-full h-full object-cover"
                   />
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setPreviewUrl('');
-                      setFormData(prev => ({ ...prev, image_url: '' }));
-                    }}
-                    className="absolute top-2 right-2 w-8 h-8 rounded-full bg-background/80 flex items-center justify-center hover:bg-background"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
+                  {!isReadOnly && ( // Hide delete button in read-only
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPreviewUrl('');
+                        setFormData(prev => ({ ...prev, image_url: '' }));
+                      }}
+                      className="absolute top-2 right-2 w-8 h-8 rounded-full bg-background/80 flex items-center justify-center hover:bg-background"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
@@ -239,6 +252,7 @@ export function ProductFormDialog({ open, onOpenChange, product }: ProductFormDi
                 accept="image/*"
                 onChange={handleImageUpload}
                 className="hidden"
+                disabled={isReadOnly} // Disable input in read-only
               />
             </div>
           </div>
@@ -252,6 +266,7 @@ export function ProductFormDialog({ open, onOpenChange, product }: ProductFormDi
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
               placeholder="Maillot Real Madrid Home"
               required
+              disabled={isReadOnly} // Disable input in read-only
             />
           </div>
 
@@ -264,6 +279,7 @@ export function ProductFormDialog({ open, onOpenChange, product }: ProductFormDi
               onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
               placeholder="Description du produit..."
               rows={3}
+              disabled={isReadOnly} // Disable textarea in read-only
             />
           </div>
 
@@ -273,16 +289,19 @@ export function ProductFormDialog({ open, onOpenChange, product }: ProductFormDi
             <Select
               value={showNewCategoryInput ? '_NEW_CATEGORY_' : formData.category}
               onValueChange={(value: ProductCategory | string) => {
-                if (value === '_NEW_CATEGORY_') {
-                  setShowNewCategoryInput(true);
-                  setNewCategoryName(''); // Clear previous new category name
-                  setFormData(prev => ({ ...prev, category: '' as ProductCategory })); // Temporarily set category to empty
-                } else {
-                  setShowNewCategoryInput(false);
-                  setNewCategoryName('');
-                  setFormData(prev => ({ ...prev, category: value as ProductCategory }));
+                if (!isReadOnly) { // Only allow change if not read-only
+                  if (value === '_NEW_CATEGORY_') {
+                    setShowNewCategoryInput(true);
+                    setNewCategoryName(''); // Clear previous new category name
+                    setFormData(prev => ({ ...prev, category: '' as ProductCategory })); // Temporarily set category to empty
+                  } else {
+                    setShowNewCategoryInput(false);
+                    setNewCategoryName('');
+                    setFormData(prev => ({ ...prev, category: value as ProductCategory }));
+                  }
                 }
               }}
+              disabled={isReadOnly} // Disable select in read-only
             >
               <SelectTrigger>
                 <SelectValue placeholder="Sélectionner une catégorie" />
@@ -300,6 +319,7 @@ export function ProductFormDialog({ open, onOpenChange, product }: ProductFormDi
                 placeholder="Entrez une nouvelle catégorie"
                 value={newCategoryName}
                 onChange={(e) => setNewCategoryName(e.target.value)}
+                disabled={isReadOnly} // Disable input in read-only
               />
             )}
             {!predefinedCategories.includes(formData.category) && formData.category && !showNewCategoryInput && (
@@ -321,6 +341,7 @@ export function ProductFormDialog({ open, onOpenChange, product }: ProductFormDi
                 placeholder="15000"
                 min="0"
                 required
+                disabled={isReadOnly} // Disable input in read-only
               />
             </div>
             <div className="space-y-2">
@@ -335,6 +356,7 @@ export function ProductFormDialog({ open, onOpenChange, product }: ProductFormDi
                 }))}
                 placeholder="12000"
                 min="0"
+                disabled={isReadOnly} // Disable input in read-only
               />
             </div>
           </div>
@@ -350,9 +372,8 @@ export function ProductFormDialog({ open, onOpenChange, product }: ProductFormDi
             <Switch
               id="promo_active"
               checked={formData.promo_active}
-              onCheckedChange={(checked) => 
-                setFormData(prev => ({ ...prev, promo_active: checked }))
-              }
+              onCheckedChange={(checked) => !isReadOnly && setFormData(prev => ({ ...prev, promo_active: checked }))} // Disable in read-only
+              disabled={isReadOnly} // Disable switch in read-only
             />
           </div>
 

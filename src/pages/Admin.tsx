@@ -36,6 +36,7 @@ import {
   Loader2,
   AlertCircle,
   Settings,
+  Eye, // Added Eye icon
 } from 'lucide-react';
 import { ProductFormDialog } from '@/components/admin/ProductFormDialog';
 import { SettingsFormDialog } from '@/components/admin/SettingsFormDialog';
@@ -83,6 +84,7 @@ export default function AdminProductsPage() {
   const [isSettingsFormOpen, setIsSettingsFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<Product | null>(null);
+  const [isReadOnly, setIsReadOnly] = useState(false); // New state for read-only mode
 
   /* ================= AUTH GUARD ================= */
   useEffect(() => {
@@ -106,6 +108,13 @@ export default function AdminProductsPage() {
   /* ================= ACTIONS ================= */
   const handleEdit = (product: Product) => {
     setEditingProduct(product);
+    setIsReadOnly(false); // Ensure it's not read-only for editing
+    setIsProductFormOpen(true);
+  };
+
+  const handleView = (product: Product) => { // New handleView function
+    setEditingProduct(product);
+    setIsReadOnly(true); // Set to read-only for viewing
     setIsProductFormOpen(true);
   };
 
@@ -267,6 +276,14 @@ export default function AdminProductsPage() {
                       <Button
                         size="icon"
                         variant="ghost"
+                        onClick={() => handleView(p)} // View button
+                        className="text-muted-foreground hover:text-primary"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant="ghost"
                         onClick={() => handleEdit(p)}
                       >
                         <Pencil className="w-4 h-4" />
@@ -324,6 +341,7 @@ export default function AdminProductsPage() {
         open={isProductFormOpen}
         onOpenChange={setIsProductFormOpen}
         product={editingProduct}
+        isReadOnly={isReadOnly} // Pass isReadOnly prop
       />
 
       <SettingsFormDialog
