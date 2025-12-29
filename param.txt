@@ -1,0 +1,93 @@
+-- 1. Création de la table
+CREATE TABLE IF NOT EXISTS public.settings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  shop_name TEXT NOT NULL,
+  logo_url TEXT NOT NULL,
+  whatsapp_number TEXT NOT NULL,
+  presentation_video_url TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+);
+
+-- 2. Activer RLS
+ALTER TABLE public.settings ENABLE ROW LEVEL SECURITY;
+
+-- 3. Politique SELECT
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'settings'
+      AND policyname = 'Anyone can view settings'
+  ) THEN
+    CREATE POLICY "Anyone can view settings"
+    ON public.settings
+    FOR SELECT
+    USING (true);
+  END IF;
+END
+$$;
+
+-- 4. Politique INSERT
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'settings'
+      AND policyname = 'Admins can insert settings'
+  ) THEN
+    CREATE POLICY "Admins can insert settings"
+    ON public.settings
+    FOR INSERT
+    WITH CHECK (public.has_role(auth.uid(), 'admin'));
+  END IF;
+END
+$$;
+
+-- 5. Politique UPDATE
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'settings'
+      AND policyname = 'Admins can update settings'
+  ) THEN
+    CREATE POLICY "Admins can update settings"
+    ON public.settings
+    FOR UPDATE
+    USING (public.has_role(auth.uid(), 'admin'));
+  END IF;
+END
+$$;
+
+-- 6. Trigger updated_at
+CREATE OR REPLACE FUNCTION public.update_updated_at_column()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  NEW.updated_at = now();
+  RETURN NEW;
+END;
+$$;
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_trigger
+    WHERE tgname = 'update_settings_updated_at'
+  ) THEN
+    CREATE TRIGGER update_settings_updated_at
+    BEFORE UPDATE ON public.settings
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_updated_at_column();
+  END IF;
+END
+$$;
+
+-- 7. Insertion initiale
+INSERT INTO public.settings (shop_name, logo_url, whatsapp_number, presentation_video_url)
+VALUES ('BestyShop', '/icon-192.png', '+22899181626', '/about.mp4');

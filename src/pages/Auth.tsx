@@ -10,6 +10,7 @@ import { ShoppingBag, ArrowLeft, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import { useSettings } from '@/hooks/useSettings'; // Import useSettings
 
 const authSchema = z.object({
   email: z.string().email('Email invalide').max(255),
@@ -22,6 +23,11 @@ export default function Auth() {
   const [loading, setLoading] = useState(false);
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
+  const { data: settings, isLoading: settingsLoading, isError: settingsError } = useSettings(); // Fetch settings
+
+  // Fallback values if settings are not loaded or error
+  const shopName = settings?.shop_name || "BestyShop";
+  const logoUrl = settings?.logo_url || "/logo.jpeg";
 
   async function handleSignIn(e: React.FormEvent) {
     e.preventDefault();
@@ -72,6 +78,14 @@ export default function Auth() {
   //   }
   // }
 
+  if (settingsLoading) {
+    return (
+        <div className="min-h-screen bg-background flex items-center justify-center">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="absolute inset-0 gradient-glow opacity-30" />
@@ -85,12 +99,12 @@ export default function Auth() {
         <Card className="border-border/50 gradient-card shadow-elevated">
           <CardHeader className="text-center">
             <img
-              src="/logo.jpeg"
-              alt="ZakSport"
+              src={logoUrl}
+              alt={shopName}
               className="w-16 h-16 rounded-xl object-cover mx-auto mb-4 shadow-glow"
             />
             <CardTitle className="font-display text-3xl">
-              Zak<span className="text-primary">Sport</span>
+              {shopName.substring(0, shopName.length - 4)}<span className="text-primary">{shopName.slice(-4)}</span>
             </CardTitle>
           </CardHeader>
           
@@ -108,7 +122,7 @@ export default function Auth() {
                     <Input
                       id="login-email"
                       type="email"
-                      placeholder="admin@sportshop.com"
+                      placeholder="admin@bestyshop.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
@@ -142,7 +156,7 @@ export default function Auth() {
                     <Input
                       id="register-email"
                       type="email"
-                      placeholder="admin@sportshop.com"
+                      placeholder="admin@bestyshop.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required

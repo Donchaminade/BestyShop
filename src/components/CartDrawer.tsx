@@ -11,10 +11,13 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/useCart";
 import { formatPrice, generateWhatsAppCartLink } from "@/lib/whatsapp";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { MessageCircle, Trash2 } from "lucide-react";
+import { MessageCircle, Trash2, Loader2 } from "lucide-react"; // Import Loader2
+import { useSettings } from '@/hooks/useSettings'; // Import useSettings
 
 export function CartDrawer({ children }: { children: React.ReactNode }) {
   const { items, removeFromCart, updateQuantity, clearCart } = useCart();
+  const { data: settings, isLoading: settingsLoading, isError: settingsError } = useSettings(); // Fetch settings
+  const whatsappNumber = settings?.whatsapp_number || ''; // Default to empty string
 
   const total = items.reduce(
     (sum, item) => sum + (item.promo_price || item.price) * item.quantity,
@@ -80,20 +83,32 @@ export function CartDrawer({ children }: { children: React.ReactNode }) {
                         <span>Total</span>
                         <span>{formatPrice(total)}</span>
                     </div>
-                    <SheetClose asChild>
-                      <a 
-                        href={generateWhatsAppCartLink(items, total)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block"
-                        onClick={handleValidation}
-                      >
-                        <Button className="w-full bg-primary hover:bg-[#22c55e] text-white" size="lg">
-                          <MessageCircle className="w-5 h-5 mr-2" />
-                          Valider via WhatsApp
+                    {settingsLoading ? (
+                        <Button className="w-full" size="lg" disabled>
+                            <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                            Chargement...
                         </Button>
-                      </a>
-                    </SheetClose>
+                    ) : settingsError || !whatsappNumber ? (
+                        <Button className="w-full" size="lg" disabled>
+                            <MessageCircle className="w-5 h-5 mr-2" />
+                            WhatsApp non disponible
+                        </Button>
+                    ) : (
+                        <SheetClose asChild>
+                            <a 
+                                href={generateWhatsAppCartLink(whatsappNumber, items, total)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="block"
+                                onClick={handleValidation}
+                            >
+                                <Button className="w-full bg-primary hover:bg-[#22c55e] text-white" size="lg">
+                                    <MessageCircle className="w-5 h-5 mr-2" />
+                                    Valider via WhatsApp
+                                </Button>
+                            </a>
+                        </SheetClose>
+                    )}
                 </div>
             </SheetFooter>
           </>

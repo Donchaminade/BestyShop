@@ -6,13 +6,19 @@ import { Button } from '@/components/ui/button';
 import { useCart } from '@/hooks/useCart';
 import { Badge } from '@/components/ui/badge';
 import { CartDrawer } from './CartDrawer';
+import { useSettings } from '@/hooks/useSettings'; // Import useSettings
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isAdmin } = useAuth();
   const { items } = useCart();
+  const { data: settings, isLoading: settingsLoading, isError: settingsError } = useSettings(); // Fetch settings
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+
+  // Fallback values if settings are not loaded or error
+  const shopName = settings?.shop_name || "BestyShop";
+  const logoUrl = settings?.logo_url || "/logo.jpeg";
 
   const navLinkClasses = ({ isActive }: { isActive: boolean }) =>
     `text-sm font-medium transition-colors hover:text-primary ${
@@ -33,12 +39,12 @@ export function Header() {
                     {/* Logo */}
                     <Link to="/" className="flex items-center gap-2 group">
                       <img
-                        src="/logo.jpeg"
-                        alt="ZakSport"
+                        src={logoUrl}
+                        alt={shopName}
                         className="w-10 h-10 rounded-lg object-cover"
                       />
                       <span className="font-display text-2xl md:text-3xl tracking-wide">
-                        Besty<span className="text-primary">Shop</span>
+                        {shopName.substring(0, shopName.length - 4)}<span className="text-primary">{shopName.slice(-4)}</span>
                       </span>
                     </Link>
           {/* Desktop Navigation */}

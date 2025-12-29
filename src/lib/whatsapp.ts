@@ -1,8 +1,6 @@
 import { Product } from '@/types/product';
 import { CartItem } from '@/hooks/useCart';
 
-const WHATSAPP_NUMBER = '+22899181626'; // À remplacer par le vrai numéro
-
 export function formatPrice(price: number): string {
   return new Intl.NumberFormat('fr-FR', {
     style: 'decimal',
@@ -10,7 +8,7 @@ export function formatPrice(price: number): string {
   }).format(price) + ' FCFA';
 }
 
-export function generateWhatsAppLink(product: Product): string {
+export function generateWhatsAppLink(whatsappNumber: string, product: Product): string {
   const price = product.promo_active && product.promo_price 
     ? product.promo_price 
     : product.price;
@@ -22,11 +20,11 @@ export function generateWhatsAppLink(product: Product): string {
     `Pouvez-vous me donner plus d'informations?`
   );
   
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
+  return `https://wa.me/${whatsappNumber}?text=${message}`;
 }
 
-export function generateWhatsAppCartLink(items: CartItem[], total: number): string {
-  const header = `🎉 *Nouvelle Commande ZAKSPORT* 🎉\n\nBonjour! Je souhaite valider ma commande:\n\n`;
+export function generateWhatsAppCartLink(whatsappNumber: string, items: CartItem[], total: number): string {
+  const header = `🎉 *Nouvelle Commande BESTYSHOP* 🎉\n\nBonjour! Je souhaite valider ma commande:\n\n`;
   
   const itemsList = items.map(item => 
     `*${item.name}*\n` +
@@ -40,5 +38,5 @@ export function generateWhatsAppCartLink(items: CartItem[], total: number): stri
 
   const message = encodeURIComponent(header + itemsList + footer);
 
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
+  return `https://wa.me/${whatsappNumber}?text=${message}`;
 }

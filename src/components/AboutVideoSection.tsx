@@ -3,9 +3,10 @@ import { useState } from 'react';
 
 interface AboutVideoContentProps {
   autoPlay?: boolean;
+  videoUrl: string; // Added videoUrl prop
 }
 
-export function AboutVideoContent({ autoPlay = false }: AboutVideoContentProps) {
+export function AboutVideoContent({ autoPlay = false, videoUrl }: AboutVideoContentProps) {
   const [hasPlayed, setHasPlayed] = useState(false);
 
   const handlePlay = () => {
@@ -23,7 +24,7 @@ export function AboutVideoContent({ autoPlay = false }: AboutVideoContentProps) 
         </div>
       )}
       <video 
-        src="/about.mp4" 
+        src={videoUrl} // Use the videoUrl prop here
         controls 
         autoPlay={autoPlay || hasPlayed} 
         loop 

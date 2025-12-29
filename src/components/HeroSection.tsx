@@ -1,9 +1,14 @@
 import { ArrowRight, Zap, PlayCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import { AboutVideoContent } from '@/components/AboutVideoSection'; // Renamed
+import { AboutVideoContent } from '@/components/AboutVideoSection';
+import { useSettings } from '@/hooks/useSettings'; // Import useSettings
+import { Loader2 } from 'lucide-react'; // Import Loader2
 
 export function HeroSection() {
+  const { data: settings, isLoading: settingsLoading, isError: settingsError } = useSettings(); // Fetch settings
+  const presentationVideoUrl = settings?.presentation_video_url || '/about.mp4'; // Default to /about.mp4
+
   return (
     <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden gradient-hero">
       {/* Background Glow Effect */}
@@ -72,13 +77,16 @@ export function HeroSection() {
               <Button 
                 variant="ghost" 
                 className="mt-12 text-primary hover:text-primary-foreground animate-pulse-glow-button text-lg font-semibold"
+                disabled={settingsLoading || settingsError || !presentationVideoUrl}
               >
-                <PlayCircle className="w-6 h-6 mr-2" />
+                {settingsLoading && <Loader2 className="w-6 h-6 mr-2 animate-spin" />}
+                {!settingsLoading && (settingsError || !presentationVideoUrl) && <X className="w-6 h-6 mr-2" />}
+                {!settingsLoading && !settingsError && presentationVideoUrl && <PlayCircle className="w-6 h-6 mr-2" />}
                 Regarder la Vidéo
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[800px] p-0 overflow-hidden">
-              <AboutVideoContent autoPlay={true} />
+              <AboutVideoContent autoPlay={true} videoUrl={presentationVideoUrl} />
             </DialogContent>
           </Dialog>
         </div>

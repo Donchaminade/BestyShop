@@ -9,6 +9,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { useSettings } from '@/hooks/useSettings'; // Import useSettings
+import { Loader2 } from 'lucide-react'; // Import Loader2
 
 interface ProductModalProps {
   product: Product;
@@ -17,6 +19,9 @@ interface ProductModalProps {
 }
 
 export function ProductModal({ product, open, onOpenChange }: ProductModalProps) {
+  const { data: settings, isLoading: settingsLoading, isError: settingsError } = useSettings(); // Fetch settings
+  const whatsappNumber = settings?.whatsapp_number || ''; // Default to empty string
+
   const hasPromo = product.promo_active && product.promo_price;
   const displayPrice = hasPromo ? product.promo_price! : product.price;
   const discount = hasPromo 
@@ -77,17 +82,29 @@ export function ProductModal({ product, open, onOpenChange }: ProductModalProps)
             </div>
 
             {/* WhatsApp Button */}
-            <a 
-              href={generateWhatsAppLink(product)} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="block mt-6"
-            >
-              <Button size="lg" className="w-full bg-[#25D366] hover:bg-[#22c55e] text-white">
-                <MessageCircle className="w-5 h-5 mr-2" />
-                Commander via WhatsApp
-              </Button>
-            </a>
+            {settingsLoading ? (
+                <Button size="lg" className="w-full mt-6" disabled>
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    Chargement...
+                </Button>
+            ) : settingsError || !whatsappNumber ? (
+                <Button size="lg" className="w-full mt-6" disabled>
+                    <MessageCircle className="w-5 h-5 mr-2" />
+                    WhatsApp non disponible
+                </Button>
+            ) : (
+                <a 
+                href={generateWhatsAppLink(whatsappNumber, product)} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="block mt-6"
+                >
+                <Button size="lg" className="w-full bg-[#25D366] hover:bg-[#22c55e] text-white">
+                    <MessageCircle className="w-5 h-5 mr-2" />
+                    Commander via WhatsApp
+                </Button>
+                </a>
+            )}
           </div>
         </div>
       </DialogContent>
