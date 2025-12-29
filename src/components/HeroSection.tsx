@@ -4,10 +4,12 @@ import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { AboutVideoContent } from '@/components/AboutVideoSection';
 import { useSettings } from '@/hooks/useSettings'; // Import useSettings
 import { Loader2 } from 'lucide-react'; // Import Loader2
+import { X } from 'lucide-react'; // Import X icon, as it might be used here
 
 export function HeroSection() {
   const { data: settings, isLoading: settingsLoading, isError: settingsError } = useSettings(); // Fetch settings
   const presentationVideoUrl = settings?.presentation_video_url || '/about.mp4'; // Default to /about.mp4
+  const shopName = settings?.shop_name || "BestyShop"; // Get shop name
 
   return (
     <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden gradient-hero">
@@ -36,7 +38,7 @@ export function HeroSection() {
           <h1 className="font-display text-5xl md:text-7xl lg:text-8xl leading-tight mb-6 animate-slide-up">
             RÉVÉLEZ VOTRE ÉCLAT
             <br />
-            <span className="text-gradient">AVEC BESTYSHOP</span>
+            <span className="text-gradient">AVEC {shopName}</span>
           </h1>
 
           {/* Subtitle */}

@@ -1,12 +1,13 @@
 import React from 'react';
 import { useInView } from 'react-intersection-observer';
-import { ArrowRight, Zap, Phone, Mail, MapPin } from 'lucide-react';
+import { ArrowRight, Zap, Phone, Mail, MapPin, Loader2, AlertCircle } from 'lucide-react'; // Added Loader2, AlertCircle
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { useSettings } from '@/hooks/useSettings'; // Import useSettings
 
 
 // Helper component for animations
@@ -29,12 +30,47 @@ const AnimatedSection = ({ children, delay = 0 }: { children: React.ReactNode, d
 
 
 export default function Contact() {
+  const { data: settings, isLoading: settingsLoading, isError: settingsError } = useSettings(); // Fetch settings
+
+  // Fallback values if settings are not loaded or error
+  const shopName = settings?.shop_name || "BestyShop";
+  const whatsappNumber = settings?.whatsapp_number || '+22899181626';
+  const shopEmailDomain = shopName.toLowerCase().replace(/\s/g, '') + '.com';
+
+
   // Form state and submission logic can be enhanced with react-hook-form later if needed
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Logic to handle form submission (e.g., via an API endpoint or mailto link)
     alert("Formulaire envoyé ! (simulation)");
   };
+
+  if (settingsLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (settingsError) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="text-center max-w-md">
+          <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mx-auto mb-4">
+            <AlertCircle className="w-8 h-8 text-destructive" />
+          </div>
+          <h1 className="font-display text-2xl mb-2">Erreur de chargement</h1>
+          <p className="text-muted-foreground mb-6">
+            Impossible de charger les paramètres de la boutique.
+          </p>
+          <Button onClick={() => window.location.reload()}>
+            Recharger la page
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background relative">
@@ -56,7 +92,7 @@ export default function Contact() {
             <span className="text-sm font-medium text-primary">Restons Connectés</span>
           </div>
           <h1 className="font-display text-5xl md:text-7xl lg:text-8xl leading-tight mb-4">
-            Contactez <span className="text-gradient">BestyShop</span>
+            Contactez <span className="text-gradient">{shopName}</span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
             Avez-vous des questions, des commentaires ou besoin d'assistance ? Notre équipe est là pour vous aider.
@@ -74,7 +110,7 @@ export default function Contact() {
                 <h3 className="font-display text-2xl mb-2">Par E-mail</h3>
                 <p className="text-muted-foreground mb-4">La meilleure façon de nous joindre pour toute demande.</p>
                 <Button asChild variant="outline">
-                  <a href="mailto:contact@bestyshop.com">contact@bestyshop.com</a>
+                  <a href={`mailto:contact@${shopEmailDomain}`}>contact@{shopEmailDomain}</a>
                 </Button>
               </Card>
             </AnimatedSection>
@@ -84,7 +120,7 @@ export default function Contact() {
                 <h3 className="font-display text-2xl mb-2">Par Téléphone</h3>
                 <p className="text-muted-foreground mb-4">Pour les demandes urgentes, appelez-nous.</p>
                 <Button asChild variant="outline">
-                  <a href="tel:+22899181626">+228 99 18 16 26</a>
+                  <a href={`tel:${whatsappNumber}`}>{whatsappNumber}</a>
                 </Button>
               </Card>
             </AnimatedSection>

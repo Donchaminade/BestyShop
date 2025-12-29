@@ -9,41 +9,63 @@ import {
 } from '@/components/ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
 import { AnimatedSection } from '@/components/ui/AnimatedSection';
-import { Play } from 'lucide-react'; // Ajout de l'icône Play
-
-// Nouvelle structure pour les témoignages vidéo TikTok
-const tiktokTestimonials = [
-  {
-    tiktokUrl: 'https://www.tiktok.com/@bestyshop/video/7315573420803527969', // Exemple d'URL TikTok
-    thumbnailUrl: 'https://placehold.co/300x533/ff69b4/ffffff?text=TikTok+Beauté+1', // Placeholder pour la miniature
-    title: 'Mon produit BestyShop préféré !',
-  },
-  {
-    tiktokUrl: 'https://www.tiktok.com/@bestyshop/video/7315573420803527970',
-    thumbnailUrl: 'https://placehold.co/300x533/ff69b4/ffffff?text=TikTok+Beauté+2',
-    title: 'Routine beauté avec BestyShop',
-  },
-  {
-    tiktokUrl: 'https://www.tiktok.com/@bestyshop/video/7315573420803527971',
-    thumbnailUrl: 'https://placehold.co/300x533/ff69b4/ffffff?text=TikTok+Beauté+3',
-    title: 'Déballage BestyShop',
-  },
-  {
-    tiktokUrl: 'https://www.tiktok.com/@bestyshop/video/7315573420803527972',
-    thumbnailUrl: 'https://placehold.co/300x533/ff69b4/ffffff?text=TikTok+Beauté+4',
-    title: 'Les indispensables BestyShop',
-  },
-  {
-    tiktokUrl: 'https://www.tiktok.com/@bestyshop/video/7315573420803527973',
-    thumbnailUrl: 'https://placehold.co/300x533/ff69b4/ffffff?text=TikTok+Beauté+5',
-    title: 'Avis sur les produits BestyShop',
-  },
-];
+import { Play, Loader2, AlertCircle } from 'lucide-react'; // Ajout de l'icône Play, Loader2, AlertCircle
+import { useSettings } from '@/hooks/useSettings'; // Import useSettings
 
 export function TestimonialSection() {
+  const { data: settings, isLoading: settingsLoading, isError: settingsError } = useSettings(); // Fetch settings
+
+  const shopName = settings?.shop_name || "BestyShop";
+
   const plugin = React.useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true })
   );
+
+  const tiktokTestimonials = [
+    {
+      tiktokUrl: 'https://www.tiktok.com/@bestyshop/video/7315573420803527969', // Exemple d'URL TikTok
+      thumbnailUrl: 'https://placehold.co/300x533/ff69b4/ffffff?text=TikTok+Beauté+1', // Placeholder pour la miniature
+      title: `Mon produit ${shopName} préféré !`,
+    },
+    {
+      tiktokUrl: 'https://www.tiktok.com/@bestyshop/video/7315573420803527970',
+      thumbnailUrl: 'https://placehold.co/300x533/ff69b4/ffffff?text=TikTok+Beauté+2',
+      title: `Routine beauté avec ${shopName}`,
+    },
+    {
+      tiktokUrl: 'https://www.tiktok.com/@bestyshop/video/7315573420803527971',
+      thumbnailUrl: 'https://placehold.co/300x533/ff69b4/ffffff?text=TikTok+Beauté+3',
+      title: `Déballage ${shopName}`,
+    },
+    {
+      tiktokUrl: 'https://www.tiktok.com/@bestyshop/video/7315573420803527972',
+      thumbnailUrl: 'https://placehold.co/300x533/ff69b4/ffffff?text=TikTok+Beauté+4',
+      title: `Les indispensables ${shopName}`,
+    },
+    {
+      tiktokUrl: 'https://www.tiktok.com/@bestyshop/video/7315573420803527973',
+      thumbnailUrl: 'https://placehold.co/300x533/ff69b4/ffffff?text=TikTok+Beauté+5',
+      title: `Avis sur les produits ${shopName}`,
+    },
+  ];
+
+  if (settingsLoading) {
+    return (
+      <section className="py-16 md:py-24 bg-background text-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" />
+        <p className="text-sm text-muted-foreground mt-2">Chargement des témoignages...</p>
+      </section>
+    );
+  }
+
+  if (settingsError) {
+    return (
+      <section className="py-16 md:py-24 bg-background text-center text-destructive">
+        <AlertCircle className="w-6 h-6 mx-auto" />
+        <p className="text-sm mt-2">Erreur de chargement des témoignages.</p>
+      </section>
+    );
+  }
 
   return (
     <section className="py-16 md:py-24 bg-background">

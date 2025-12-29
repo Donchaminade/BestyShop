@@ -1,12 +1,43 @@
-import { ArrowRight, Zap, CheckCircle, Heart, Users } from 'lucide-react';
+import { ArrowRight, Zap, CheckCircle, Heart, Users, Loader2, AlertCircle } from 'lucide-react'; // Added Loader2, AlertCircle
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { AnimatedSection } from '@/components/ui/AnimatedSection';
 import { TestimonialSection } from '@/components/TestimonialSection';
-
 import { SocialMediaSection } from '@/components/SocialMediaSection';
+import { useSettings } from '@/hooks/useSettings'; // Import useSettings
 
 export default function About() {
+  const { data: settings, isLoading: settingsLoading, isError: settingsError } = useSettings(); // Fetch settings
+
+  const shopName = settings?.shop_name || "BestyShop";
+
+  if (settingsLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (settingsError) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="text-center max-w-md">
+          <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mx-auto mb-4">
+            <AlertCircle className="w-8 h-8 text-destructive" />
+          </div>
+          <h1 className="font-display text-2xl mb-2">Erreur de chargement</h1>
+          <p className="text-muted-foreground mb-6">
+            Impossible de charger les paramètres de la boutique.
+          </p>
+          <Button onClick={() => window.location.reload()}>
+            Recharger la page
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground relative">
       <div 
@@ -30,7 +61,7 @@ export default function About() {
             Bien plus que des <span className="text-gradient">produits de beauté</span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            BestyShop est né d'une passion pour la beauté et le bien-être. Nous ne vendons pas seulement des produits, nous partageons une philosophie, des conseils et l'amour de prendre soin de soi.
+            {shopName} est né d'une passion pour la beauté et le bien-être. Nous ne vendons pas seulement des produits, nous partageons une philosophie, des conseils et l'amour de prendre soin de soi.
           </p>
         </div>
       </section>
@@ -50,7 +81,7 @@ export default function About() {
             <AnimatedSection delay={200}>
               <h2 className="font-display text-4xl md:text-5xl mb-4">Notre <span className="text-gradient">Mission</span></h2>
               <p className="text-muted-foreground text-lg mb-6">
-                Chez BestyShop, notre mission est de sublimer votre beauté naturelle. Nous croyons que chaque personne mérite de se sentir confiante et radieuse. C'est pourquoi nous nous engageons à offrir des produits de haute qualité qui respectent votre peau et révèlent votre éclat unique.
+                Chez {shopName}, notre mission est de sublimer votre beauté naturelle. Nous croyons que chaque personne mérite de se sentir confiante et radieuse. C'est pourquoi nous nous engageons à offrir des produits de haute qualité qui respectent votre peau et révèlent votre éclat unique.
               </p>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
@@ -78,7 +109,7 @@ export default function About() {
             <AnimatedSection delay={200} className="order-last md:order-first">
               <h2 className="font-display text-4xl md:text-5xl mb-4"><span className="text-gradient">Qualité</span> & <span className="text-gradient">Authenticité</span></h2>
               <p className="text-muted-foreground text-lg mb-6">
-                L'authenticité est notre maître-mot. Chaque produit BestyShop est une promesse d'excellence. Nous travaillons sans relâche pour vous proposer des cosmétiques et des soins qui respectent votre corps et l'environnement.
+                L'authenticité est notre maître-mot. Chaque produit {shopName} est une promesse d'excellence. Nous travaillons sans relâche pour vous proposer des cosmétiques et des soins qui respectent votre corps et l'environnement.
               </p>
               <Link to="/products">
                 <Button variant="outline" className="group">
@@ -90,7 +121,7 @@ export default function About() {
             <AnimatedSection className="order-first md:order-last">
               <img 
                 src="https://placehold.co/800x600/ff69b4/ffffff?text=QUALITY+GUARANTEE" 
-                alt="Flacons de produits de beauté de haute qualité" 
+                alt="Flacons de produits de beauté disposés avec élégance" 
                 className="rounded-xl shadow-elevated w-full h-auto object-cover"
               />
             </AnimatedSection>
@@ -105,7 +136,7 @@ export default function About() {
             <Users className="w-12 h-12 mx-auto text-primary mb-4" />
             <h2 className="font-display text-4xl md:text-5xl mb-4">Notre <span className="text-gradient">Engagement Communautaire</span></h2>
             <p className="max-w-3xl mx-auto text-lg text-muted-foreground mb-8">
-              BestyShop, c'est plus qu'une boutique, c'est une source d'inspiration. Nous sommes dédiés à offrir un service client exceptionnel et à construire un espace où chacun peut trouver les conseils et les produits adaptés à ses besoins. Votre épanouissement est notre plus belle réussite.
+              {shopName}, c'est plus qu'une boutique, c'est une source d'inspiration. Nous sommes dédiés à offrir un service client exceptionnel et à construire un espace où chacun peut trouver les conseils et les produits adaptés à ses besoins. Votre épanouissement est notre plus belle réussite.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link to="/contact">
