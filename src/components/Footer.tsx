@@ -1,16 +1,18 @@
-import { ShoppingBag, Instagram, Facebook, MessageCircle, Loader2, AlertCircle } from 'lucide-react'; // Added Loader2, AlertCircle
+import { Instagram, Facebook, MessageCircle, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useSettings } from '@/hooks/useSettings'; // Import useSettings
 
 export function Footer() {
-  const { data: settings, isLoading: settingsLoading, isError: settingsError } = useSettings();
+  const { data: settings, isLoading } = useSettings();
 
-  // Fallback values if settings are not loaded or error
-  const shopName = settings?.shop_name || "BestyShop";
+  const shopName = settings?.shop_name || "Tayba Market";
   const logoUrl = settings?.logo_url || "/logo.jpeg";
   const whatsappNumber = settings?.whatsapp_number || '+22899181626';
 
-  if (settingsLoading) {
+  const email = 'taybamarket19@gmail.com';
+  const openingHours = 'Du lundi au samedi, de 8h à 21h max';
+
+  if (isLoading) {
     return (
       <footer className="bg-card border-t border-border py-8 text-center">
         <Loader2 className="w-6 h-6 animate-spin text-primary mx-auto" />
@@ -18,16 +20,7 @@ export function Footer() {
       </footer>
     );
   }
-
-  if (settingsError) {
-    return (
-      <footer className="bg-card border-t border-border py-8 text-center text-destructive">
-        <AlertCircle className="w-6 h-6 mx-auto" />
-        <p className="text-sm mt-2">Erreur de chargement des paramètres.</p>
-      </footer>
-    );
-  }
-
+  
   return (
     <footer className="bg-card border-t border-border">
       <div className="container mx-auto px-4 py-12">
@@ -41,11 +34,10 @@ export function Footer() {
                 className="w-10 h-10 rounded-lg object-cover"
               />
                           <span className="font-display text-2xl md:text-3xl tracking-wide">
-                            {shopName.substring(0, shopName.length - 4)}<span className="text-primary">{shopName.slice(-4)}</span>
+                          {shopName}
                           </span>            </Link>
             <p className="text-muted-foreground text-sm max-w-md">
-              Votre destination pour des produits de beauté authentiques et des soins de qualité.
-              Découvrez nos collections pour révéler votre éclat naturel.
+              Tayba Market : Votre supermarché à Lomé, Togo. Découvrez une sélection variée de produits alimentaires, cosmétiques et bien d'autres, avec une spécialité de produits venant d'Allemagne.
             </p>
           </div>
 
@@ -59,26 +51,26 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/products?category=Maquillage" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Maquillage
+                <Link to="/products" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Produits
                 </Link>
               </li>
               <li>
-                <Link to="/products?category=Soins Visage" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Soins Visage
+                <Link to="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  À propos
                 </Link>
               </li>
               <li>
-                <Link to="/products?category=Parfums" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Parfums
+                <Link to="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Contact
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Contact */}
+          {/* Contact & Horaires */}
           <div>
-            <h4 className="font-display text-lg mb-4">Contact</h4>
+            <h4 className="font-display text-lg mb-4">Contact & Horaires</h4>
             <ul className="space-y-2">
               <li>
                 <a 
@@ -88,8 +80,21 @@ export function Footer() {
                   className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
                   <MessageCircle className="w-4 h-4" />
-                  WhatsApp
+                  WhatsApp: {whatsappNumber}
                 </a>
+              </li>
+              <li>
+                <a 
+                  href={`mailto:taybamarket19@gmail.com`} 
+                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
+                  Email: taybamarket19@gmail.com
+                </a>
+              </li>
+              <li>
+                <p className="text-sm text-muted-foreground">
+                  Horaires: Du lundi au samedi, de 8h à 21h max
+                </p>
               </li>
               <li>
                 <a 

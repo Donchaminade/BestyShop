@@ -1,5 +1,5 @@
 import { NavLink, Link } from 'react-router-dom';
-import { ShoppingCart, Menu, X } from 'lucide-react';
+import { ShoppingCart, Menu, X, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
@@ -12,13 +12,21 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isAdmin } = useAuth();
   const { items } = useCart();
-  const { data: settings, isLoading: settingsLoading, isError: settingsError } = useSettings(); // Fetch settings
+  const { data: settings, isLoading } = useSettings(); // Fetch settings, extract isLoading
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
 
   // Fallback values if settings are not loaded or error
-  const shopName = settings?.shop_name || "BestyShop";
+  const shopName = settings?.shop_name || "Tayba Market";
   const logoUrl = settings?.logo_url || "/logo.jpeg";
+
+  if (isLoading) {
+    return (
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border h-16 flex items-center justify-center">
+        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+      </header>
+    );
+  }
 
   const navLinkClasses = ({ isActive }: { isActive: boolean }) =>
     `text-sm font-medium transition-colors hover:text-primary ${
@@ -44,7 +52,7 @@ export function Header() {
                         className="w-10 h-10 rounded-lg object-cover"
                       />
                       <span className="font-display text-2xl md:text-3xl tracking-wide">
-                        {shopName.substring(0, shopName.length - 4)}<span className="text-primary">{shopName.slice(-4)}</span>
+                        {shopName}
                       </span>
                     </Link>
           {/* Desktop Navigation */}

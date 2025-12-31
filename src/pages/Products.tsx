@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ProductGrid } from '@/components/ProductGrid';
-import { useProducts, useProductCategories } from '@/hooks/useProducts';
+import { useProducts } from '@/hooks/useProducts'; // Removed useProductCategories
 import { Input } from '@/components/ui/input';
 import { Loader2, Zap, Search, ArrowLeft, ArrowRight, Tag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { CategoryFilter } from '@/components/CategoryFilter'; // Imported CategoryFilter
 import { ProductCategory } from '@/types/product';
 
 export default function Products() {
@@ -13,7 +13,7 @@ export default function Products() {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [showPromotionsOnly, setShowPromotionsOnly] = useState(!!location.state?.showPromos);
-  const [selectedCategory, setSelectedCategory] = useState<ProductCategory | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<ProductCategory | 'all'>('all'); // Initialize as 'all'
   const pageSize = 12;
 
   useEffect(() => {
@@ -25,10 +25,11 @@ export default function Products() {
   const { data, isLoading, isFetching, isError } = useProducts({ 
     page: currentPage, 
     pageSize, 
-    category: selectedCategory || undefined 
+    category: selectedCategory === 'all' ? undefined : selectedCategory, // Pass 'undefined' for 'all'
   });
   
-  const { data: categories, isLoading: isLoadingCategories } = useProductCategories();
+  // Removed useProductCategories and isLoadingCategories
+  // const { data: categories, isLoading: isLoadingCategories } = useProductCategories();
 
   const products = data?.data || [];
   const totalCount = data?.count || 0;
@@ -49,13 +50,8 @@ export default function Products() {
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   };
 
-  const handleCategoryChange = (value: string) => {
-    const newCategory = value as ProductCategory;
-    if (selectedCategory === newCategory) {
-      setSelectedCategory(null); // Deselect if clicked again
-    } else {
-      setSelectedCategory(newCategory);
-    }
+  const handleCategoryChange = (value: ProductCategory | 'all') => { // Updated type for CategoryFilter
+    setSelectedCategory(value);
     setCurrentPage(1); // Reset to first page on category change
   };
 
@@ -113,27 +109,11 @@ export default function Products() {
                     {showPromotionsOnly ? "Voir tout" : "Promotions"}
                 </Button>
             </div>
-            {isLoadingCategories ? (
-                <div className="h-10 w-full bg-card rounded-lg animate-pulse" />
-            ) : (
-                <div className="flex justify-center">
-                    <ToggleGroup 
-                      type="single" 
-                      value={selectedCategory || ''}
-                      onValueChange={handleCategoryChange}
-                      className="flex-wrap justify-center gap-2"
-                    >
-                        <ToggleGroupItem value="" aria-label="Toggle all">
-                            Tout
-                        </ToggleGroupItem>
-                        {categories?.map(cat => (
-                            <ToggleGroupItem key={cat} value={cat} aria-label={`Toggle ${cat}`}>
-                                {cat}
-                            </ToggleGroupItem>
-                        ))}
-                    </ToggleGroup>
-                </div>
-            )}
+            
+            <CategoryFilter // Integrated CategoryFilter
+              selected={selectedCategory} 
+              onChange={handleCategoryChange} 
+            />
         </div>
       
         {/* Product Listing */}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useInView } from 'react-intersection-observer';
-import { ArrowRight, Zap, Phone, Mail, MapPin, Loader2, AlertCircle } from 'lucide-react'; // Added Loader2, AlertCircle
+import { ArrowRight, Zap, Phone, Mail, MapPin, Loader2, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
@@ -30,12 +30,14 @@ const AnimatedSection = ({ children, delay = 0 }: { children: React.ReactNode, d
 
 
 export default function Contact() {
-  const { data: settings, isLoading: settingsLoading, isError: settingsError } = useSettings(); // Fetch settings
+  const { data: settings, isLoading, isError } = useSettings(); // Fetch settings
 
   // Fallback values if settings are not loaded or error
-  const shopName = settings?.shop_name || "BestyShop";
+  const shopName = settings?.shop_name || "Tayba Market";
   const whatsappNumber = settings?.whatsapp_number || '+22899181626';
-  const shopEmailDomain = shopName.toLowerCase().replace(/\s/g, '') + '.com';
+  const emailAddress = 'taybamarket19@gmail.com';
+  const locationText = 'Lomé, Togo, non loin du marché d\'Agbalepedogan';
+  const openingHoursText = 'Du lundi au samedi, de 8h à 21h max';
 
 
   // Form state and submission logic can be enhanced with react-hook-form later if needed
@@ -45,7 +47,7 @@ export default function Contact() {
     alert("Formulaire envoyé ! (simulation)");
   };
 
-  if (settingsLoading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -53,7 +55,7 @@ export default function Contact() {
     );
   }
 
-  if (settingsError) {
+  if (isError) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <div className="text-center max-w-md">
@@ -110,7 +112,7 @@ export default function Contact() {
                 <h3 className="font-display text-2xl mb-2">Par E-mail</h3>
                 <p className="text-muted-foreground mb-4">La meilleure façon de nous joindre pour toute demande.</p>
                 <Button asChild variant="outline">
-                  <a href={`mailto:contact@${shopEmailDomain}`}>contact@{shopEmailDomain}</a>
+                  <a href={`mailto:${emailAddress}`}>{emailAddress}</a>
                 </Button>
               </Card>
             </AnimatedSection>
@@ -127,9 +129,9 @@ export default function Contact() {
             <AnimatedSection delay={400}>
               <Card className="text-center p-6 h-full">
                 <MapPin className="w-10 h-10 text-primary mx-auto mb-4" />
-                <h3 className="font-display text-2xl mb-2">Service Client</h3>
-                <p className="text-muted-foreground mb-4">Disponibles en ligne, pour une beauté accessible partout.</p>
-                <p className="font-semibold text-foreground">Retrouvez-nous sur les réseaux !</p>
+                <h3 className="font-display text-2xl mb-2">Localisation & Horaires</h3>
+                <p className="text-muted-foreground mb-4">{locationText}</p>
+                <p className="font-semibold text-foreground">{openingHoursText}</p>
               </Card>
             </AnimatedSection>
           </div>
