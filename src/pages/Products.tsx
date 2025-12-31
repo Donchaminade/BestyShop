@@ -1,47 +1,86 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ProductGrid } from '@/components/ProductGrid';
-import { useProducts } from '@/hooks/useProducts'; // Removed useProductCategories
+import { useProducts } from '@/hooks/useProducts';
 import { Input } from '@/components/ui/input';
-import { Loader2, Zap, Search, ArrowLeft, ArrowRight, Tag } from 'lucide-react';
+import {
+  Loader2,
+  Zap,
+  Search,
+  ArrowLeft,
+  ArrowRight,
+  Tag,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { CategoryFilter } from '@/components/CategoryFilter'; // Imported CategoryFilter
+import { CategoryFilter } from '@/components/CategoryFilter';
 import { ProductCategory } from '@/types/product';
 
 export default function Products() {
   const location = useLocation();
+
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [showPromotionsOnly, setShowPromotionsOnly] = useState(!!location.state?.showPromos);
-  const [selectedCategory, setSelectedCategory] = useState<ProductCategory | 'all'>('all'); // Initialize as 'all'
+  const [showPromotionsOnly, setShowPromotionsOnly] = useState(
+    !!location.state?.showPromos
+  );
+  const [selectedCategory, setSelectedCategory] = useState<
+    ProductCategory | 'all'
+  >('all');
+
   const pageSize = 12;
 
+  /* --------------------------------------------
+   * Arrivée depuis une autre page (promotions)
+   * -------------------------------------------- */
   useEffect(() => {
     if (location.state?.showPromos) {
       setShowPromotionsOnly(true);
+      setCurrentPage(1);
+      window.history.replaceState({}, document.title);
     }
   }, [location.state]);
 
-  const { data, isLoading, isFetching, isError } = useProducts({ 
-    page: currentPage, 
-    pageSize, 
-    category: selectedCategory === 'all' ? undefined : selectedCategory, // Pass 'undefined' for 'all'
-  });
-  
-  // Removed useProductCategories and isLoadingCategories
-  // const { data: categories, isLoading: isLoadingCategories } = useProductCategories();
+  /* --------------------------------------------
+   * Reset pagination sur filtres client-side
+   * -------------------------------------------- */
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, showPromotionsOnly]);
 
-  const products = data?.data || [];
-  const totalCount = data?.count || 0;
+  /* --------------------------------------------
+   * Fetch produits (catégorie côté API)
+   * -------------------------------------------- */
+  const { data, isLoading, isFetching, isError } = useProducts({
+    page: currentPage,
+    pageSize,
+    category: selectedCategory === 'all' ? undefined : selectedCategory,
+  });
+
+  const products = data?.data ?? [];
+  const totalCount = data?.count ?? 0;
   const totalPages = Math.ceil(totalCount / pageSize);
 
-  // Client-side filtering is now only for search term and promo, as category is handled by the API
-  const filteredProducts = products.filter(product =>
-    (product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.description?.toLowerCase().includes(searchTerm.toLowerCase())) &&
-    (!showPromotionsOnly || (showPromotionsOnly && product.promo_active))
-  );
+  /* --------------------------------------------
+   * Filtrage client-side optimisé
+   * -------------------------------------------- */
+  const filteredProducts = useMemo(() => {
+    const term = searchTerm.toLowerCase();
 
+    return products.filter((product) => {
+      const matchesSearch =
+        product.name.toLowerCase().includes(term) ||
+        product.description?.toLowerCase().includes(term);
+
+      const matchesPromo =
+        !showPromotionsOnly || product.promo_active === true;
+
+      return matchesSearch && matchesPromo;
+    });
+  }, [products, searchTerm, showPromotionsOnly]);
+
+  /* --------------------------------------------
+   * Handlers
+   * -------------------------------------------- */
   const handlePreviousPage = () => {
     setCurrentPage((prev) => Math.max(prev - 1, 1));
   };
@@ -50,122 +89,131 @@ export default function Products() {
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   };
 
-  const handleCategoryChange = (value: ProductCategory | 'all') => { // Updated type for CategoryFilter
+  const handleCategoryChange = (value: ProductCategory | 'all') => {
     setSelectedCategory(value);
-    setCurrentPage(1); // Reset to first page on category change
+    setCurrentPage(1);
   };
 
   return (
-    <div className="min-h-screen bg-background relative">
-      <div 
-        className="absolute inset-0 opacity-[0.2]" // Increased opacity
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* 🔥 BACKGROUND DÉCORATIF – NE BLOQUE PLUS LES CLICS */}
+      <div
+        className="absolute inset-0 opacity-[0.2] pointer-events-none"
         style={{
-          backgroundImage: `linear-gradient(hsl(var(--primary) / 0.3) 1px, transparent 1px),
-                           linear-gradient(90deg, hsl(var(--primary) / 0.3) 1px, transparent 1px)`,
+          backgroundImage: `
+            linear-gradient(hsl(var(--primary) / 0.3) 1px, transparent 1px),
+            linear-gradient(90deg, hsl(var(--primary) / 0.3) 1px, transparent 1px)
+          `,
           backgroundSize: '40px 40px',
         }}
       />
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-16 md:pt-40 md:pb-24 flex items-center justify-center overflow-hidden gradient-hero">
-        <div className="absolute inset-0 gradient-glow opacity-30" />
-        {/* Removed redundant grid background from here */}
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 mb-6 animate-fade-in">
+
+      {/* CONTENU */}
+      <div className="relative z-10">
+        {/* HERO */}
+        <section className="pt-32 pb-16 md:pt-40 md:pb-24 text-center gradient-hero">
+          <div className="container mx-auto px-4">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 mb-6">
               <Zap className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-primary">Notre Collection</span>
+              <span className="text-sm font-medium text-primary">
+                Notre Collection
+              </span>
             </div>
-            <h1 className="font-display text-5xl md:text-7xl lg:text-8xl leading-tight mb-4 animate-slide-up">
+
+            <h1 className="font-display text-5xl md:text-7xl lg:text-8xl mb-4">
               Tous nos <span className="text-gradient">Produits</span>
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: '0.2s' }}>
-              Parcourez notre sélection complète de maillots, équipements et accessoires sportifs.
+
+            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+              Parcourez notre sélection complète de maillots, équipements et
+              accessoires sportifs.
             </p>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Main Content */}
-      <div className="container mx-auto px-4 pb-16">
-        {/* Filters */}
-        <div className="mb-8 md:mb-12">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
-                <div className="relative flex-grow w-full md:w-auto">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                    <Input
-                      type="text"
-                      placeholder="Rechercher un produit..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 rounded-lg border border-border bg-card shadow-sm focus-visible:ring-primary"
-                    />
-                </div>
-                <Button
-                    variant={showPromotionsOnly ? "default" : "outline"}
-                    onClick={() => setShowPromotionsOnly(!showPromotionsOnly)}
-                    className="w-full md:w-auto flex-shrink-0"
-                >
-                    <Tag className="w-4 h-4 mr-2" />
-                    {showPromotionsOnly ? "Voir tout" : "Promotions"}
-                </Button>
+        {/* MAIN */}
+        <div className="container mx-auto px-4 pb-16">
+          {/* FILTRES */}
+          <div className="mb-10">
+            <div className="flex flex-col md:flex-row gap-4 mb-6">
+              <div className="relative flex-grow">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Input
+                  placeholder="Rechercher un produit..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 py-3"
+                />
+              </div>
+
+              <Button
+                variant={showPromotionsOnly ? 'default' : 'outline'}
+                onClick={() => setShowPromotionsOnly((p) => !p)}
+              >
+                <Tag className="w-4 h-4 mr-2" />
+                {showPromotionsOnly ? 'Voir tout' : 'Promotions'}
+              </Button>
             </div>
-            
-            <CategoryFilter // Integrated CategoryFilter
-              selected={selectedCategory} 
-              onChange={handleCategoryChange} 
-            />
-        </div>
-      
-        {/* Product Listing */}
-        {isLoading ? (
-          <div className="flex justify-center items-center h-64">
-            <Loader2 className="w-12 h-12 animate-spin text-primary" />
-          </div>
-        ) : isError ? (
-          <div className="text-center text-destructive py-16">Erreur lors du chargement des produits.</div>
-        ) : (
-          <div className="relative">
-            {isFetching && !isLoading && (
-              <div className="absolute inset-0 bg-background/70 backdrop-blur-sm flex items-center justify-center z-10 rounded-xl">
-                <Loader2 className="w-10 h-10 animate-spin text-primary" />
-              </div>
-            )}
-            
-            {filteredProducts.length > 0 ? (
-              <ProductGrid products={filteredProducts} />
-            ) : (
-              <div className="text-center py-16">
-                  <p className="text-lg text-muted-foreground">Aucun produit ne correspond à votre sélection.</p>
-              </div>
-            )}
 
-            {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-4 mt-12">
-                <Button 
-                  variant="outline" 
-                  onClick={handlePreviousPage} 
-                  disabled={currentPage === 1 || isFetching}
-                  className="group"
-                >
-                  <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-                  Précédent
-                </Button>
-                <span className="font-medium text-muted-foreground">
-                  Page {currentPage} sur {totalPages}
-                </span>
-                <Button 
-                  variant="outline" 
-                  onClick={handleNextPage} 
-                  disabled={currentPage === totalPages || isFetching}
-                  className="group"
-                >
-                  Suivant
-                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </div>
-            )}
+            <CategoryFilter
+              selected={selectedCategory}
+              onChange={handleCategoryChange}
+            />
           </div>
-        )}
+
+          {/* LISTE */}
+          {isLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <Loader2 className="w-12 h-12 animate-spin text-primary" />
+            </div>
+          ) : isError ? (
+            <div className="text-center text-destructive py-16">
+              Erreur lors du chargement des produits.
+            </div>
+          ) : (
+            <div className="relative">
+              {isFetching && (
+                <div className="absolute inset-0 bg-background/70 backdrop-blur-sm flex items-center justify-center z-20 rounded-xl">
+                  <Loader2 className="w-10 h-10 animate-spin text-primary" />
+                </div>
+              )}
+
+              {filteredProducts.length > 0 ? (
+                <ProductGrid products={filteredProducts} />
+              ) : (
+                <div className="text-center py-16 text-muted-foreground">
+                  Aucun produit ne correspond à votre sélection.
+                </div>
+              )}
+
+              {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-4 mt-12">
+                  <Button
+                    variant="outline"
+                    onClick={handlePreviousPage}
+                    disabled={currentPage === 1 || isFetching}
+                  >
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Précédent
+                  </Button>
+
+                  <span className="font-medium text-muted-foreground">
+                    Page {currentPage} sur {totalPages}
+                  </span>
+
+                  <Button
+                    variant="outline"
+                    onClick={handleNextPage}
+                    disabled={currentPage === totalPages || isFetching}
+                  >
+                    Suivant
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
