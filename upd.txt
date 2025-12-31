@@ -1,0 +1,29 @@
+-- Script SQL pour insérer une ligne initiale dans la table public.settings
+-- Exécutez cette commande dans l'éditeur SQL de Supabase si votre table 'settings' est vide.
+-- Adaptez les valeurs selon vos besoins.
+
+INSERT INTO public.settings (
+  id,
+  shop_name,
+  logo_url,
+  whatsapp_number,
+  presentation_video_url,
+  primary_color,
+  created_at,
+  updated_at
+) VALUES (
+  gen_random_uuid(), -- Génère un ID unique
+  'Nom de ma Boutique',
+  'https://example.com/default-logo.png', -- Remplacez par une URL de logo par défaut ou laissez vide
+  '+33612345678',
+  'https://example.com/default-video.mp4', -- Remplacez par une URL de vidéo par défaut ou laissez vide
+  '324 100% 70%', -- Une couleur HSL valide par défaut (rose)
+  now(),
+  now()
+)
+ON CONFLICT (id) DO NOTHING; -- Évite les erreurs si une ligne avec cet ID existe déjà
+
+-- Après avoir exécuté cette requête, assurez-vous que les politiques RLS pour le bucket 'videos' sont correctement configurées.
+-- Allez dans l'interface Supabase, section 'Storage', cliquez sur le bucket 'videos'.
+-- Assurez-vous que les politiques RLS permettent l'insertion (insert) et la mise à jour (update) d'objets
+-- pour les rôles appropriés (par exemple, "authenticated" si les utilisateurs admin sont authentifiés).

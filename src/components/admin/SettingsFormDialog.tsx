@@ -12,8 +12,9 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
-import { Loader2, Upload, X, ImageIcon, Video } from 'lucide-react'; // Added Video icon
+import { Loader2, Upload, X, ImageIcon, Video } from 'lucide-react';
 import { toast } from 'sonner';
+import { hexToHsl, hslToHex } from '@/lib/colorUtils'; // Import color conversion utilities
 
 interface SettingsFormDialogProps {
   open: boolean;
@@ -23,20 +24,24 @@ interface SettingsFormDialogProps {
 export function SettingsFormDialog({ open, onOpenChange }: SettingsFormDialogProps) {
   const { data: currentSettings, isLoading: settingsLoading } = useSettings();
   const updateSettings = useUpdateSettings();
-  const logoFileInputRef = useRef<HTMLInputElement>(null); // Renamed for clarity
-  const videoFileInputRef = useRef<HTMLInputElement>(null); // New ref for video input
+  const logoFileInputRef = useRef<HTMLInputElement>(null);
+  const videoFileInputRef = useRef<HTMLInputElement>(null);
+
+  // Default HSL color that will be converted to HEX for the input
+  const defaultPrimaryHsl = '324 100% 70%';
 
   const [formData, setFormData] = useState<SettingsFormData>({
     shop_name: '',
     logo_url: '',
     whatsapp_number: '',
     presentation_video_url: '',
-    primary_color: '#32CD32', // Default primary color
+    primary_color: defaultPrimaryHsl, // Store HSL internally
   });
-  const [uploadingLogo, setUploadingLogo] = useState(false); // Renamed for clarity
-  const [uploadingVideo, setUploadingVideo] = useState(false); // New state for video upload
-  const [logoPreviewUrl, setLogoPreviewUrl] = useState(''); // Renamed for clarity
-  const [videoPreviewUrl, setVideoPreviewUrl] = useState(''); // New state for video preview
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
+  const [logoPreviewUrl, setLogoPreviewUrl] = useState('');
+  const [videoPreviewUrl, setVideoPreviewUrl] = useState('');
+  const [primaryColorHex, setPrimaryColorHex] = useState(hslToHex(defaultPrimaryHsl)); // State for the HEX color picker
 
   useEffect(() => {
     if (currentSettings) {
@@ -45,10 +50,11 @@ export function SettingsFormDialog({ open, onOpenChange }: SettingsFormDialogPro
         logo_url: currentSettings.logo_url,
         whatsapp_number: currentSettings.whatsapp_number,
         presentation_video_url: currentSettings.presentation_video_url,
-        primary_color: currentSettings.primary_color,
+        primary_color: currentSettings.primary_color, // This is HSL from DB
       });
       setLogoPreviewUrl(currentSettings.logo_url);
       setVideoPreviewUrl(currentSettings.presentation_video_url);
+      setPrimaryColorHex(hslToHex(currentSettings.primary_color)); // Convert HSL to HEX for color picker
     }
   }, [currentSettings]);
 
@@ -56,7 +62,7 @@ export function SettingsFormDialog({ open, onOpenChange }: SettingsFormDialogPro
     onOpenChange(open);
   }
 
-  async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) { // Renamed for clarity
+  async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -70,7 +76,7 @@ export function SettingsFormDialog({ open, onOpenChange }: SettingsFormDialogPro
       return;
     }
 
-    setUploadingLogo(true); // Using new state
+    setUploadingLogo(true);
 
     try {
       const fileExt = file.name.split('.').pop();
@@ -87,17 +93,17 @@ export function SettingsFormDialog({ open, onOpenChange }: SettingsFormDialogPro
         .getPublicUrl(fileName);
 
       setFormData(prev => ({ ...prev, logo_url: publicUrl }));
-      setLogoPreviewUrl(publicUrl); // Using new state
+      setLogoPreviewUrl(publicUrl);
       toast.success('Logo téléchargé');
     } catch (error) {
       console.error('Upload error:', error);
       toast.error('Erreur lors du téléchargement du logo');
     } finally {
-      setUploadingLogo(false); // Using new state
+      setUploadingLogo(false);
     }
   }
 
-  async function handleVideoUpload(e: React.ChangeEvent<HTMLInputElement>) { // New function for video upload
+  async function handleVideoUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -106,7 +112,7 @@ export function SettingsFormDialog({ open, onOpenChange }: SettingsFormDialogPro
       return;
     }
 
-    if (file.size > 10 * 1024 * 1024) { // 10MB limit
+    if (file.size > 10 * 1024 * 1024) {
       toast.error('La vidéo ne doit pas dépasser 10MB');
       return;
     }
@@ -118,7 +124,7 @@ export function SettingsFormDialog({ open, onOpenChange }: SettingsFormDialogPro
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage
-        .from('videos') // Using 'videos' bucket
+        .from('videos')
         .upload(fileName, file);
 
       if (uploadError) throw uploadError;
@@ -157,7 +163,7 @@ export function SettingsFormDialog({ open, onOpenChange }: SettingsFormDialogPro
         toast.error('L\'URL de la vidéo de présentation est requise');
         return;
     }
-    if (!formData.primary_color.trim()) { // Validate primary color
+    if (!formData.primary_color.trim()) {
         toast.error('La couleur principale est requise');
         return;
     }
@@ -175,7 +181,7 @@ export function SettingsFormDialog({ open, onOpenChange }: SettingsFormDialogPro
     }
   }
 
-  const isLoading = updateSettings.isPending || settingsLoading || uploadingLogo || uploadingVideo; // Updated isLoading
+  const isLoading = updateSettings.isPending || settingsLoading || uploadingLogo || uploadingVideo;
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -208,22 +214,22 @@ export function SettingsFormDialog({ open, onOpenChange }: SettingsFormDialogPro
             {/* Logo Upload */}
             <div className="space-y-2">
                 <Label>Logo de la boutique</Label>
-                <div 
+                <div
                 className="relative border-2 border-dashed border-border rounded-xl p-4 hover:border-primary/50 transition-colors cursor-pointer"
-                onClick={() => logoFileInputRef.current?.click()} // Use new ref
+                onClick={() => logoFileInputRef.current?.click()}
                 >
-                {logoPreviewUrl ? ( // Use new state
+                {logoPreviewUrl ? (
                     <div className="relative aspect-square w-24 h-24 rounded-lg overflow-hidden mx-auto">
-                    <img 
-                        src={logoPreviewUrl} // Use new state
-                        alt="Logo Preview" 
+                    <img
+                        src={logoPreviewUrl}
+                        alt="Logo Preview"
                         className="w-full h-full object-cover"
                     />
                     <button
                         type="button"
                         onClick={(e) => {
                         e.stopPropagation();
-                        setLogoPreviewUrl(''); // Use new state
+                        setLogoPreviewUrl('');
                         setFormData(prev => ({ ...prev, logo_url: '' }));
                         }}
                         className="absolute top-1 right-1 w-6 h-6 rounded-full bg-background/80 flex items-center justify-center hover:bg-background"
@@ -233,7 +239,7 @@ export function SettingsFormDialog({ open, onOpenChange }: SettingsFormDialogPro
                     </div>
                 ) : (
                     <div className="flex flex-col items-center justify-center py-4 text-muted-foreground">
-                    {uploadingLogo ? ( // Use new state
+                    {uploadingLogo ? (
                         <Loader2 className="w-6 h-6 animate-spin mb-2" />
                     ) : (
                         <ImageIcon className="w-6 h-6 mb-2" />
@@ -243,10 +249,10 @@ export function SettingsFormDialog({ open, onOpenChange }: SettingsFormDialogPro
                     </div>
                 )}
                 <input
-                    ref={logoFileInputRef} // Use new ref
+                    ref={logoFileInputRef}
                     type="file"
                     accept="image/*"
-                    onChange={handleLogoUpload} // Use new handler
+                    onChange={handleLogoUpload}
                     className="hidden"
                 />
                 </div>
@@ -255,14 +261,14 @@ export function SettingsFormDialog({ open, onOpenChange }: SettingsFormDialogPro
             {/* Presentation Video Upload */}
             <div className="space-y-2">
                 <Label>Vidéo de présentation</Label>
-                <div 
+                <div
                 className="relative border-2 border-dashed border-border rounded-xl p-4 hover:border-primary/50 transition-colors cursor-pointer"
-                onClick={() => videoFileInputRef.current?.click()} // Use new ref
+                onClick={() => videoFileInputRef.current?.click()}
                 >
-                {videoPreviewUrl ? ( // Use new state
+                {videoPreviewUrl ? (
                     <div className="relative aspect-video w-full h-auto rounded-lg overflow-hidden mx-auto">
                     <video
-                        src={videoPreviewUrl} // Use new state
+                        src={videoPreviewUrl}
                         controls
                         className="w-full h-full object-cover"
                     >
@@ -272,7 +278,7 @@ export function SettingsFormDialog({ open, onOpenChange }: SettingsFormDialogPro
                         type="button"
                         onClick={(e) => {
                         e.stopPropagation();
-                        setVideoPreviewUrl(''); // Use new state
+                        setVideoPreviewUrl('');
                         setFormData(prev => ({ ...prev, presentation_video_url: '' }));
                         }}
                         className="absolute top-1 right-1 w-6 h-6 rounded-full bg-background/80 flex items-center justify-center hover:bg-background"
@@ -285,8 +291,8 @@ export function SettingsFormDialog({ open, onOpenChange }: SettingsFormDialogPro
                     {uploadingVideo ? (
                         <Loader2 className="w-6 h-6 animate-spin mb-2" />
                     ) : (
-                        <> {/* Wrap multiple elements in a Fragment */}
-                            <Video className="w-6 h-6 mb-2" /> {/* Use Video icon */}
+                        <>
+                            <Video className="w-6 h-6 mb-2" />
                             <p className="text-sm">Cliquez pour télécharger une vidéo</p>
                             <p className="text-xs mt-1">MP4, WEBM (max 10MB)</p>
                         </>
@@ -294,10 +300,10 @@ export function SettingsFormDialog({ open, onOpenChange }: SettingsFormDialogPro
                     </div>
                 )}
                 <input
-                    ref={videoFileInputRef} // Use new ref
+                    ref={videoFileInputRef}
                     type="file"
                     accept="video/*"
-                    onChange={handleVideoUpload} // Use new handler
+                    onChange={handleVideoUpload}
                     className="hidden"
                 />
                 </div>
@@ -308,9 +314,13 @@ export function SettingsFormDialog({ open, onOpenChange }: SettingsFormDialogPro
                 <Label htmlFor="primary_color">Couleur principale *</Label>
                 <Input
                 id="primary_color"
-                type="color" // Color picker
-                value={formData.primary_color}
-                onChange={(e) => setFormData(prev => ({ ...prev, primary_color: e.target.value }))}
+                type="color"
+                value={primaryColorHex} // Use HEX value for the color picker
+                onChange={(e) => {
+                    const hexValue = e.target.value;
+                    setPrimaryColorHex(hexValue); // Update HEX state
+                    setFormData(prev => ({ ...prev, primary_color: hexToHsl(hexValue) })); // Convert to HSL for formData
+                }}
                 required
                 />
             </div>

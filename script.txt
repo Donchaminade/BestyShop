@@ -1,0 +1,46 @@
+-- SQL Script pour configurer les politiques RLS pour les buckets 'logos' et 'videos'
+-- Exécutez ce script dans l'éditeur SQL de Supabase (section 'SQL Editor').
+
+-- --- POLITIQUES POUR LE BUCKET 'logos' ---
+
+-- Politique pour permettre aux utilisateurs authentifiés d'uploader des logos (INSERT)
+-- Si l'utilisateur qui uploade le logo est authentifié.
+-- Vous pouvez ajuster cette condition si vous voulez restreindre l'upload aux seuls admins, par exemple.
+CREATE POLICY "Allow authenticated uploads to logos bucket"
+ON storage.objects FOR INSERT WITH CHECK (
+  bucket_id = 'logos' AND auth.uid() IS NOT NULL
+);
+
+-- Politique pour permettre à tout le monde de voir (lire) les logos (SELECT)
+-- Utile si vos logos sont publics.
+CREATE POLICY "Allow public read access to logos bucket"
+ON storage.objects FOR SELECT USING (
+  bucket_id = 'logos'
+);
+
+-- --- POLITIQUES POUR LE BUCKET 'videos' ---
+
+-- Politique pour permettre aux utilisateurs authentifiés d'uploader des vidéos (INSERT)
+-- Si l'utilisateur qui uploade la vidéo est authentifié.
+CREATE POLICY "Allow authenticated uploads to videos bucket"
+ON storage.objects FOR INSERT WITH CHECK (
+  bucket_id = 'videos' AND auth.uid() IS NOT NULL
+);
+
+-- Politique pour permettre à tout le monde de voir (lire) les vidéos (SELECT)
+-- Utile si vos vidéos de présentation sont publiques.
+CREATE POLICY "Allow public read access to videos bucket"
+ON storage.objects FOR SELECT USING (
+  bucket_id = 'videos'
+);
+
+-- Note:
+-- Si vous avez déjà des politiques en place qui entrent en conflit, vous devrez les supprimer
+-- ou les modifier avant d'appliquer celles-ci.
+-- Pour supprimer une politique existante: DROP POLICY "nom_de_la_politique" ON storage.objects;
+-- Pour les mises à jour (UPDATE) ou suppressions (DELETE), vous devrez ajouter des politiques similaires.
+-- Par exemple, pour permettre la mise à jour par les propriétaires des fichiers ou les admins:
+-- CREATE POLICY "Allow authenticated updates to logos bucket"
+-- ON storage.objects FOR UPDATE USING (
+--   bucket_id = 'logos' AND auth.uid() = owner_id -- si vous avez une colonne owner_id
+-- );
