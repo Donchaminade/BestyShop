@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { ArrowRight, Zap, PlayCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
@@ -48,13 +49,17 @@ export function HeroSection() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in" style={{ animationDelay: '0.4s' }}>
-            <Button size="lg" className="group min-w-[200px]">
-              Explorer la Beauté
-              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-            </Button>
-            <Button variant="outline" size="lg" className="min-w-[200px]">
-              Offres Exclusives
-            </Button>
+            <Link to="/promosection">
+              <Button size="lg" className="group min-w-[200px]">
+                Explorer les Produits
+                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
+            <Link to="/promosection">
+              <Button variant="outline" size="lg" className="min-w-[200px]">
+                Offres Exclusives
+              </Button>
+            </Link>
           </div>
 
           {/* Stats */}

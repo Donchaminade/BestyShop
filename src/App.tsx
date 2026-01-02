@@ -9,6 +9,7 @@ import Admin from "./pages/Admin";
 import About from "./pages/About"; // Import new page
 import Contact from "./pages/Contact"; // Import new page
 import Products from "./pages/Products"; // Import new page
+import Promo from "./pages/Promo"; // Import new page
 import NotFound from "./pages/NotFound";
 import { Layout } from "./components/Layout"; // Import Layout
 import { useSettings } from "./hooks/useSettings"; // Import useSettings
@@ -82,6 +83,7 @@ const AppContent = () => {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/products" element={<Products />} />
+          <Route path="/promosection" element={<Promo />} />
         </Route>
         <Route path="/auth" element={<Auth />} />
         <Route path="/admin" element={<Admin />} />
