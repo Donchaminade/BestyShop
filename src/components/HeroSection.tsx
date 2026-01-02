@@ -33,19 +33,19 @@ export function HeroSection() {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 mb-8 animate-fade-in">
             <Zap className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-primary">Découvrez nos dernières collections</span>
+            <span className="text-sm font-medium text-primary">Fraîcheur et Qualité à votre Table</span>
           </div>
 
           {/* Main Heading */}
           <h1 className="font-display text-5xl md:text-7xl lg:text-8xl leading-tight mb-6 animate-slide-up">
-            RÉVÉLEZ VOTRE ÉCLAT
+            NOURRISSEZ VOTRE VIE
             <br />
             <span className="text-gradient">AVEC {shopName}</span>
           </h1>
 
           {/* Subtitle */}
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            Découvrez nos gammes exclusives de produits de beauté, de soins et de cosmétiques pour révéler votre beauté naturelle.
+            Explorez notre sélection de produits alimentaires 100% bio et naturels, cultivés avec passion et respect de la terre.
           </p>
 
           {/* CTA Buttons */}
@@ -67,15 +67,15 @@ export function HeroSection() {
           <div className="grid grid-cols-3 gap-8 mt-16 pt-8 border-t border-border/50 max-w-md mx-auto animate-fade-in" style={{ animationDelay: '0.6s' }}>
             <div>
               <div className="font-display text-3xl md:text-4xl text-primary">500+</div>
-              <div className="text-xs text-muted-foreground mt-1">Articles Beauté</div>
+              <div className="text-xs text-muted-foreground mt-1">Produits Bio</div>
             </div>
             <div>
-              <div className="font-display text-3xl md:text-4xl text-primary">24h</div>
-              <div className="text-xs text-muted-foreground mt-1">Livraison Rapide</div>
+              <div className="font-display text-3xl md:text-4xl text-primary">Livraison</div>
+              <div className="text-xs text-muted-foreground mt-1">Express</div>
             </div>
             <div>
               <div className="font-display text-3xl md:text-4xl text-primary">100%</div>
-              <div className="text-xs text-muted-foreground mt-1">Qualité Garantie</div>
+              <div className="text-xs text-muted-foreground mt-1">Origine Garantie</div>
             </div>
           </div>
 

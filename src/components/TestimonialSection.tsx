@@ -15,7 +15,7 @@ import { useSettings } from '@/hooks/useSettings'; // Import useSettings
 export function TestimonialSection() {
   const { data: settings, isLoading: settingsLoading, isError: settingsError } = useSettings(); // Fetch settings
 
-  const shopName = settings?.shop_name || "BestyShop";
+  const shopName = settings?.shop_name || "NutriPack";
 
   const plugin = React.useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true })
@@ -23,28 +23,28 @@ export function TestimonialSection() {
 
   const tiktokTestimonials = [
     {
-      tiktokUrl: 'https://www.tiktok.com/@bestyshop/video/7315573420803527969', // Exemple d'URL TikTok
-      thumbnailUrl: 'https://placehold.co/300x533/ff69b4/ffffff?text=TikTok+Beauté+1', // Placeholder pour la miniature
-      title: `Mon produit ${shopName} préféré !`,
+      tiktokUrl: 'https://www.tiktok.com/@nutripack/video/placeholder1',
+      thumbnailUrl: 'https://placehold.co/300x533/84cc16/ffffff?text=Recette%20Bio',
+      title: `Mes paniers ${shopName} de la semaine !`,
     },
     {
-      tiktokUrl: 'https://www.tiktok.com/@bestyshop/video/7315573420803527970',
-      thumbnailUrl: 'https://placehold.co/300x533/ff69b4/ffffff?text=TikTok+Beauté+2',
-      title: `Routine beauté avec ${shopName}`,
+      tiktokUrl: 'https://www.tiktok.com/@nutripack/video/placeholder2',
+      thumbnailUrl: 'https://placehold.co/300x533/22c55e/ffffff?text=Alimentation%20Saine',
+      title: `Une alimentation saine avec ${shopName}`,
     },
     {
-      tiktokUrl: 'https://www.tiktok.com/@bestyshop/video/7315573420803527971',
-      thumbnailUrl: 'https://placehold.co/300x533/ff69b4/ffffff?text=TikTok+Beauté+3',
-      title: `Déballage ${shopName}`,
+      tiktokUrl: 'https://www.tiktok.com/@nutripack/video/placeholder3',
+      thumbnailUrl: 'https://placehold.co/300x533/84cc16/ffffff?text=Déballage%20NutriPack',
+      title: `Déballage de ma commande ${shopName}`,
     },
     {
-      tiktokUrl: 'https://www.tiktok.com/@bestyshop/video/7315573420803527972',
-      thumbnailUrl: 'https://placehold.co/300x533/ff69b4/ffffff?text=TikTok+Beauté+4',
-      title: `Les indispensables ${shopName}`,
+      tiktokUrl: 'https://www.tiktok.com/@nutripack/video/placeholder4',
+      thumbnailUrl: 'https://placehold.co/300x533/22c55e/ffffff?text=Indispensables%20Bio',
+      title: `Les indispensables bio de ${shopName}`,
     },
     {
-      tiktokUrl: 'https://www.tiktok.com/@bestyshop/video/7315573420803527973',
-      thumbnailUrl: 'https://placehold.co/300x533/ff69b4/ffffff?text=TikTok+Beauté+5',
+      tiktokUrl: 'https://www.tiktok.com/@nutripack/video/placeholder5',
+      thumbnailUrl: 'https://placehold.co/300x533/84cc16/ffffff?text=Avis%20Produits',
       title: `Avis sur les produits ${shopName}`,
     },
   ];
@@ -72,7 +72,7 @@ export function TestimonialSection() {
       <div className="container mx-auto px-4">
         <AnimatedSection>
           <h2 className="font-display text-4xl md:text-5xl text-center mb-12">
-            Ils nous <span className="text-gradient">aiment sur TikTok</span>
+            Ils partagent leur expérience <span className="text-gradient">NutriPack</span>
           </h2>
 
           <Carousel

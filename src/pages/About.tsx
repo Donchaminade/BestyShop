@@ -10,7 +10,7 @@ import { hexToHsl } from '@/lib/colorUtils'; // Import hexToHsl
 export default function About() {
   const { data: settings, isLoading, isError } = useSettings(); // Fetch settings
 
-  const shopName = settings?.shop_name || "Tayba Market";
+  const shopName = settings?.shop_name || "NutriPack";
   const primaryColorHsl = settings?.primary_color ? hexToHsl(settings.primary_color) : '222.2 47.4% 11.2%'; // Fallback to a dark HSL
 
   if (isLoading) {
@@ -57,13 +57,13 @@ export default function About() {
         <div className="container mx-auto px-4 relative z-10 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 mb-6 animate-fade-in">
             <Zap className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-primary">Notre Essence, Votre Éclat</span>
+            <span className="text-sm font-medium text-primary">Notre Philosophie : Votre Bien-être Naturel</span>
           </div>
           <h1 className="font-display text-5xl md:text-7xl lg:text-8xl leading-tight mb-4 animate-slide-up">
-            Bien plus que des <span className="text-gradient">produits de qualité</span>
+            L'Essence du Naturel pour <span className="text-gradient">votre Alimentation</span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            Tayba Market est votre destination pour une sélection variée de produits alimentaires, cosmétiques et bien d'autres, avec une spécialité de produits venant d'Allemagne. Nous nous engageons à vous offrir le meilleur.
+            NutriPack est votre source de confiance pour une sélection variée de produits alimentaires 100% biologiques et naturels. Nous nous engageons à vous offrir le meilleur de la terre.
           </p>
         </div>
       </section>
@@ -75,27 +75,27 @@ export default function About() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <AnimatedSection>
               <img 
-                src="/image.png" 
-                alt="Produits de beauté disposés avec élégance" 
+                src="https://placehold.co/800x800/22c55e/ffffff?text=BIO%20HARVEST" 
+                alt="Récolte biologique et produits frais" 
                 className="rounded-xl shadow-elevated w-full h-auto object-cover"
               />
             </AnimatedSection>
             <AnimatedSection delay={200}>
               <h2 className="font-display text-4xl md:text-5xl mb-4">Notre <span className="text-gradient">Mission</span></h2>
               <p className="text-muted-foreground text-lg mb-6">
-                Chez {shopName}, notre mission est de vous offrir des produits de qualité supérieure. Nous nous engageons à sélectionner rigoureusement des articles, principalement d'Allemagne, pour satisfaire vos besoins en produits alimentaires, cosmétiques et divers. Notre objectif est de vous apporter satisfaction et bien-être au quotidien.
+                Chez {shopName}, notre mission est de vous offrir le meilleur de la nature. Nous nous engageons à sélectionner rigoureusement des produits alimentaires 100% biologiques, issus de circuits courts et respectueux de l'environnement, pour une alimentation saine et éthique.
               </p>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
                   <Heart className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                   <span>
-                    <strong className="text-foreground">Qualité garantie :</strong> Chaque article est sélectionné avec soin, en privilégiant l'origine allemande pour l'excellence et la fiabilité.
+                    <strong className="text-foreground">Origine contrôlée :</strong> Chaque produit est tracé, certifié biologique et cultivé avec passion par des producteurs engagés.
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
                   <CheckCircle className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                   <span>
-                    <strong className="text-foreground">Variété et satisfaction :</strong> Nous vous offrons une large gamme de produits pour répondre à tous vos besoins, avec la garantie d'une expérience d'achat agréable.
+                    <strong className="text-foreground">Santé et vitalité :</strong> Nous vous proposons une alimentation qui nourrit votre corps et votre esprit, pour un bien-être au quotidien et une vitalité retrouvée.
                   </span>
                 </li>
               </ul>
@@ -111,19 +111,19 @@ export default function About() {
             <AnimatedSection delay={200} className="order-last md:order-first">
               <h2 className="font-display text-4xl md:text-5xl mb-4"><span className="text-gradient">Qualité</span> & <span className="text-gradient">Authenticité</span></h2>
               <p className="text-muted-foreground text-lg mb-6">
-                L'authenticité et la qualité sont nos priorités. Chez {shopName}, chaque produit est choisi avec soin pour sa provenance et son excellence, notamment pour nos articles importés d'Allemagne. Nous nous engageons à vous offrir le meilleur pour votre quotidien.
+                L'authenticité et la traçabilité sont nos maîtres mots. Chez {shopName}, chaque produit est sélectionné avec le plus grand soin, directement auprès de producteurs respectueux de l'agriculture biologique. Nous nous engageons à vous offrir des saveurs pures et un savoir-faire traditionnel.
               </p>
               <Link to="/products">
                 <Button variant="outline" className="group">
-                  Découvrir la collection
+                  Découvrir nos produits bio
                   <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
             </AnimatedSection>
             <AnimatedSection className="order-first md:order-last">
               <img 
-                src="/klity.png" 
-                alt="Flacons de produits de beauté disposés avec élégance" 
+                src="https://placehold.co/800x800/84cc16/ffffff?text=ORGANIC%20QUALITY" 
+                alt="Produits biologiques de qualité" 
                 className="rounded-xl shadow-elevated w-full h-auto object-cover"
               />
             </AnimatedSection>
@@ -136,9 +136,9 @@ export default function About() {
         <div className="container mx-auto px-4">
           <AnimatedSection>
             <Users className="w-12 h-12 mx-auto text-primary mb-4" />
-            <h2 className="font-display text-4xl md:text-5xl mb-4">Notre <span className="text-gradient">Engagement Communautaire</span></h2>
+            <h2 className="font-display text-4xl md:text-5xl mb-4">Notre Engagement <span className="text-gradient">pour une Alimentation Durable</span></h2>
             <p className="max-w-3xl mx-auto text-lg text-muted-foreground mb-8">
-              {shopName} est votre partenaire pour des produits du quotidien de qualité. Nous sommes dédiés à offrir un service client exceptionnel et à construire un espace où chacun peut trouver les produits alimentaires, cosmétiques et divers adaptés à ses besoins. Votre satisfaction est notre priorité.
+              {shopName} est votre allié pour une alimentation saine et durable. Nous nous engageons à vous offrir un service client de proximité et à construire une communauté où chacun peut accéder à des produits alimentaires biologiques et naturels qui respectent sa santé et l'environnement. Votre bien-être est notre priorité.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link to="/contact">

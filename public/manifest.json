@@ -1,7 +1,7 @@
 {
-  "name": "BestyShop",
-  "short_name": "BestyShop",
-  "description": "Boutique de produits de beauté et de bien-être",
+  "name": "NutriPack - Le Goût du Naturel",
+  "short_name": "NutriPack",
+  "description": "Votre source pour des produits alimentaires 100% bio et naturels. Fraîcheur et qualité garanties.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f1419",

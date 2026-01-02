@@ -5,7 +5,7 @@ import { useSettings } from '@/hooks/useSettings'; // Import useSettings
 export function SocialMediaSection() {
   const { data: settings, isLoading } = useSettings(); // Fetch settings
 
-  const shopName = settings?.shop_name || "Tayba Market";
+  const shopName = settings?.shop_name || "NutriPack";
   const sanitizedShopName = shopName.toLowerCase().replace(/\s/g, '');
 
   if (isLoading) {
@@ -21,10 +21,10 @@ export function SocialMediaSection() {
       <div className="container mx-auto px-4 text-center">
         <AnimatedSection>
           <h2 className="font-display text-4xl md:text-5xl mb-8">
-            Suivez <span className="text-gradient">Tayba Market</span> sur les réseaux sociaux
+            Suivez <span className="text-gradient">{shopName}</span> sur les réseaux sociaux
           </h2>
           <div className="flex justify-center space-x-6">
-            <a href={`https://www.tiktok.com/@${sanitizedShopName}`} target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary transition-colors">
+            <a href="https://www.tiktok.com/@nutripack2" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary transition-colors">
               <Youtube className="w-12 h-12" /> {/* Using Youtube for TikTok as we don't have a TikTok icon directly */}
             </a>
             <a href={`https://www.facebook.com/${sanitizedShopName}`} target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary transition-colors">

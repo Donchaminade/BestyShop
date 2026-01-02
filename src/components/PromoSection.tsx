@@ -45,10 +45,10 @@ export function PromoSection() {
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 text-promo mb-3">
             <Flame className="w-6 h-6" />
-            <span className="font-display text-xl tracking-wide">OFFRES SPÉCIALES</span>
+            <span className="font-display text-xl tracking-wide">LES INDISPENSABLES BIO</span>
             <Flame className="w-6 h-6" />
           </div>
-          <h2 className="font-display text-4xl md:text-5xl mb-2">PROMOS DU MOMENT</h2>
+          <h2 className="font-display text-4xl md:text-5xl mb-2">PANIERS DE LA SEMAINE</h2>
           <div className="w-20 h-1 bg-promo mx-auto rounded-full" />
         </div>
 
@@ -76,7 +76,7 @@ export function PromoSection() {
         <div className="text-center mt-12">
           <Link to="/products" state={{ showPromos: true }}>
             <Button variant="outline" className="group">
-              Voir toutes les promotions
+              Découvrir tous les paniers
               <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
           </Link>

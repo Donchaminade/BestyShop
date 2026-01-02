@@ -33,11 +33,11 @@ export default function Contact() {
   const { data: settings, isLoading, isError } = useSettings(); // Fetch settings
 
   // Fallback values if settings are not loaded or error
-  const shopName = settings?.shop_name || "Tayba Market";
-  const whatsappNumber = settings?.whatsapp_number || '+22899181626';
-  const emailAddress = 'taybamarket19@gmail.com';
-  const locationText = 'Lomé, Togo, non loin du marché d\'Agbalepedogan';
-  const openingHoursText = 'Du lundi au samedi, de 8h à 21h max';
+  const shopName = settings?.shop_name || "NutriPack";
+  const whatsappNumber = settings?.whatsapp_name || '+22899181626'; // Keeping WhatsApp number
+  const emailAddress = 'contact@nutripack.com'; // New email
+  const locationText = 'Votre marché de produits bio en ligne'; // New location
+  const openingHoursText = 'Disponible en ligne 24h/24, 7j/7'; // New opening hours
 
 
   // Form state and submission logic can be enhanced with react-hook-form later if needed
@@ -91,13 +91,13 @@ export default function Contact() {
         <div className="container mx-auto px-4 relative z-10 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 mb-6">
             <Zap className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-primary">Restons Connectés</span>
+            <span className="text-sm font-medium text-primary">Ensemble pour une Alimentation Saine</span>
           </div>
           <h1 className="font-display text-5xl md:text-7xl lg:text-8xl leading-tight mb-4">
-            Contactez <span className="text-gradient">{shopName}</span>
+            Une Question ? Contactez <span className="text-gradient">{shopName}</span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-            Avez-vous des questions, des commentaires ou besoin d'assistance ? Notre équipe est là pour vous aider.
+            Avez-vous des questions sur nos produits, vos commandes ou besoin de conseils personnalisés ? Notre équipe dédiée est là pour vous répondre.
           </p>
         </div>
       </section>
@@ -110,7 +110,7 @@ export default function Contact() {
               <Card className="text-center p-6 h-full">
                 <Mail className="w-10 h-10 text-primary mx-auto mb-4" />
                 <h3 className="font-display text-2xl mb-2">Par E-mail</h3>
-                <p className="text-muted-foreground mb-4">La meilleure façon de nous joindre pour toute demande.</p>
+                <p className="text-muted-foreground mb-4">Privilégiez l'e-mail pour vos questions détaillées sur nos produits ou commandes.</p>
                 <Button asChild variant="outline">
                   <a href={`mailto:${emailAddress}`}>{emailAddress}</a>
                 </Button>
@@ -119,10 +119,10 @@ export default function Contact() {
             <AnimatedSection delay={200}>
               <Card className="text-center p-6 h-full">
                 <Phone className="w-10 h-10 text-primary mx-auto mb-4" />
-                <h3 className="font-display text-2xl mb-2">Par Téléphone</h3>
-                <p className="text-muted-foreground mb-4">Pour les demandes urgentes, appelez-nous.</p>
+                <h3 className="font-display text-2xl mb-2">Par Téléphone / WhatsApp</h3>
+                <p className="text-muted-foreground mb-4">Contactez-nous via WhatsApp pour une réponse rapide ou des questions urgentes.</p>
                 <Button asChild variant="outline">
-                  <a href={`tel:${whatsappNumber}`}>{whatsappNumber}</a>
+                  <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noopener noreferrer">{whatsappNumber}</a>
                 </Button>
               </Card>
             </AnimatedSection>
@@ -158,27 +158,27 @@ export default function Contact() {
             <h2 className="font-display text-4xl md:text-5xl mb-6">Questions Fréquentes</h2>
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="item-1">
-                <AccordionTrigger>Quels sont les délais de livraison ?</AccordionTrigger>
+                <AccordionTrigger>D'où proviennent vos produits biologiques ?</AccordionTrigger>
                 <AccordionContent>
-                  Les délais de livraison varient de 2 à 5 jours ouvrables pour les commandes nationales. Vous recevrez un numéro de suivi dès l'expédition.
+                  Nos produits proviennent directement de producteurs locaux et de fermes certifiées biologiques, garantissant une traçabilité complète et le respect des normes environnementales.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-2">
-                <AccordionTrigger>Puis-je retourner un produit ?</AccordionTrigger>
+                <AccordionTrigger>Comment garantissez-vous la fraîcheur des produits ?</AccordionTrigger>
                 <AccordionContent>
-                  Oui, vous avez 14 jours pour retourner un article dans son état d'origine. Veuillez consulter notre politique de retour pour plus de détails.
+                  Nous travaillons en circuit court et optimisons nos livraisons pour que les produits arrivent chez vous dans les meilleures conditions de fraîcheur. Nos emballages sont également conçus pour préserver la qualité.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-3">
-                <AccordionTrigger>Proposez-vous des conseils personnalisés ?</AccordionTrigger>
+                <AccordionTrigger>Puis-je commander des paniers personnalisés ?</AccordionTrigger>
                 <AccordionContent>
-                  Oui, nos experts sont disponibles pour vous offrir des conseils personnalisés sur les produits et les routines de beauté adaptées à vos besoins.
+                  Oui, nous proposons des options de paniers personnalisables. Contactez notre service client pour discuter de vos préférences et nous créerons un panier sur mesure pour vous.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-4">
-                <AccordionTrigger>Comment puis-je suivre ma commande ?</AccordionTrigger>
+                <AccordionTrigger>Proposez-vous la livraison à domicile ?</AccordionTrigger>
                 <AccordionContent>
-                  Une fois votre commande expédiée, vous recevrez un e-mail contenant un lien de suivi pour suivre votre colis en temps réel.
+                  Oui, nous assurons une livraison rapide et efficace à domicile dans plusieurs régions. Vérifiez notre section 'Livraison' pour plus de détails sur les zones desservies et les tarifs.
                 </AccordionContent>
               </AccordionItem>
             </Accordion>

@@ -5,12 +5,12 @@ import { useSettings } from '@/hooks/useSettings'; // Import useSettings
 export function Footer() {
   const { data: settings, isLoading } = useSettings();
 
-  const shopName = settings?.shop_name || "Tayba Market";
+  const shopName = settings?.shop_name || "NutriPack";
   const logoUrl = settings?.logo_url || "/logo.jpeg";
   const whatsappNumber = settings?.whatsapp_number || '+22899181626';
 
-  const email = 'taybamarket19@gmail.com';
-  const openingHours = 'Du lundi au samedi, de 8h à 21h max';
+  const email = 'contact@nutripack.com';
+  const openingHours = 'Disponible en ligne 24h/24, 7j/7';
 
   if (isLoading) {
     return (
@@ -37,7 +37,7 @@ export function Footer() {
                           {shopName}
                           </span>            </Link>
             <p className="text-muted-foreground text-sm max-w-md">
-              Tayba Market : Votre supermarché à Lomé, Togo. Découvrez une sélection variée de produits alimentaires, cosmétiques et bien d'autres, avec une spécialité de produits venant d'Allemagne.
+              NutriPack : Votre source pour des produits alimentaires 100% bio et naturels. Fraîcheur, saveur et qualité garanties, directement du producteur à votre table.
             </p>
           </div>
 
@@ -85,15 +85,15 @@ export function Footer() {
               </li>
               <li>
                 <a 
-                  href={`mailto:taybamarket19@gmail.com`} 
+                  href={`mailto:${email}`} 
                   className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Email: taybamarket19@gmail.com
+                  Email: {email}
                 </a>
               </li>
               <li>
                 <p className="text-sm text-muted-foreground">
-                  Horaires: Du lundi au samedi, de 8h à 21h max
+                  Horaires: {openingHours}
                 </p>
               </li>
               <li>

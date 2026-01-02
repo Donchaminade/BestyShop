@@ -5,18 +5,18 @@ import { AnimatedSection } from './ui/AnimatedSection';
 const features = [
   {
     icon: <ShieldCheck className="w-10 h-10 text-primary" />,
-    title: 'Qualité Supérieure Garantie',
-    description: 'Chaque produit est méticuleusement sélectionné pour sa pureté, son efficacité et son respect de votre peau. Votre satisfaction est notre priorité absolue.',
+    title: 'Produits 100% Biologiques',
+    description: 'Notre sélection rigoureuse de produits certifiés biologiques, sans pesticides ni OGM, pour une alimentation saine et respectueuse de l\'environnement.',
   },
   {
     icon: <Gem className="w-10 h-10 text-primary" />,
-    title: 'Collections Exclusives & Tendances',
-    description: 'Découvrez des marques de niche, des éditions limitées et les dernières innovations en matière de beauté. Soyez toujours à la pointe de la tendance.',
+    title: 'Fraîcheur Garantie',
+    description: 'Nous collaborons directement avec des producteurs locaux pour vous garantir des produits d\'une fraîcheur incomparable, livrés directement chez vous.',
   },
   {
     icon: <Sparkles className="w-10 h-10 text-primary" />,
-    title: 'Conseils Personnalisés',
-    description: 'Nos experts sont à votre écoute pour vous guider vers les produits parfaits adaptés à vos besoins spécifiques et à votre type de peau.',
+    title: 'Saveurs Authentiques',
+    description: 'Redécouvrez le vrai goût des aliments. Nos produits préservent toutes leurs saveurs naturelles pour des repas équilibrés et délicieux.',
   },
 ];
 
