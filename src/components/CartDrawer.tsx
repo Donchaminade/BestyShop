@@ -18,6 +18,7 @@ export function CartDrawer({ children }: { children: React.ReactNode }) {
   const { items, removeFromCart, updateQuantity, clearCart } = useCart();
   const { data: settings, isLoading: settingsLoading, isError: settingsError } = useSettings(); // Fetch settings
   const whatsappNumber = settings?.whatsapp_number || ''; // Default to empty string
+  const shopName = settings?.shop_name || 'BESTYSHOP'; // Get shop name or default
 
   const total = items.reduce(
     (sum, item) => sum + (item.promo_price || item.price) * item.quantity,
@@ -96,7 +97,7 @@ export function CartDrawer({ children }: { children: React.ReactNode }) {
                     ) : (
                         <SheetClose asChild>
                             <a 
-                                href={generateWhatsAppCartLink(whatsappNumber, items, total)}
+                                href={generateWhatsAppCartLink(whatsappNumber, shopName, items, total)}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="block"

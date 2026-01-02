@@ -318,8 +318,9 @@ export function SettingsFormDialog({ open, onOpenChange }: SettingsFormDialogPro
                 value={primaryColorHex} // Use HEX value for the color picker
                 onChange={(e) => {
                     const hexValue = e.target.value;
+                    const hslValue = hexToHsl(hexValue);
                     setPrimaryColorHex(hexValue); // Update HEX state
-                    setFormData(prev => ({ ...prev, primary_color: hexToHsl(hexValue) })); // Convert to HSL for formData
+                    setFormData(prev => ({ ...prev, primary_color: hslValue })); // Convert to HSL for formData
                 }}
                 required
                 />

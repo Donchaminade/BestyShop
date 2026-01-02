@@ -23,8 +23,8 @@ export function generateWhatsAppLink(whatsappNumber: string, product: Product): 
   return `https://wa.me/${whatsappNumber}?text=${message}`;
 }
 
-export function generateWhatsAppCartLink(whatsappNumber: string, items: CartItem[], total: number): string {
-  const header = `🎉 *Nouvelle Commande BESTYSHOP* 🎉\n\nBonjour! Je souhaite valider ma commande:\n\n`;
+export function generateWhatsAppCartLink(whatsappNumber: string, shopName: string, items: CartItem[], total: number): string {
+  const header = `🎉 *Nouvelle Commande ${shopName.toUpperCase()}* 🎉\n\nBonjour! Je souhaite valider ma commande:\n\n`;
   
   const itemsList = items.map(item => 
     `*${item.name}*\n` +

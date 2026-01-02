@@ -24,7 +24,7 @@ const AppContent = () => {
 
   useEffect(() => {
     if (settings && settings.primary_color) {
-      const primaryHsl = hexToHsl(settings.primary_color);
+      const primaryHsl = settings.primary_color;
       // For primary-foreground, we aim for a dark color that contrasts well.
       // A simplified way is to check the lightness of the primary color.
       // If primary is light, foreground is dark. If primary is dark, foreground is light.

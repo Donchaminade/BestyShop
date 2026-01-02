@@ -1,3 +1,4 @@
+import { Product } from '@/types/product';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Zap, PlayCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -49,7 +50,7 @@ export function HeroSection() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in" style={{ animationDelay: '0.4s' }}>
-            <Link to="/promosection">
+            <Link to="/products">
               <Button size="lg" className="group min-w-[200px]">
                 Explorer les Produits
                 <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />

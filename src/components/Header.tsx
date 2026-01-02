@@ -17,7 +17,7 @@ export function Header() {
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
 
   // Fallback values if settings are not loaded or error
-  const shopName = settings?.shop_name || "Tayba Market";
+  const shopName = settings?.shop_name || "BestyShop";
   const logoUrl = settings?.logo_url || "/logo.jpeg";
 
   if (isLoading) {
