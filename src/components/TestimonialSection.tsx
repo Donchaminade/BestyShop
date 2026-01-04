@@ -51,7 +51,7 @@ export function TestimonialSection() {
       <div className="container mx-auto px-4">
         <AnimatedSection>
           <h2 className="font-display text-4xl md:text-5xl text-center mb-12">
-            Quelques videoa tiktok de <span className="text-gradient">NutriPack</span>
+            Quelques videos tiktok de <span className="text-gradient">NutriPack</span>
           </h2>
 
           <Carousel
