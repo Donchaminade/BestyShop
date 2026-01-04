@@ -3,6 +3,11 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Play, AlertTriangle } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
 interface TikTokCardProps {
   tiktokUrl: string;
@@ -12,12 +17,14 @@ interface OEmbedData {
   thumbnail_url: string;
   title: string;
   author_name: string;
+  html: string; // The HTML embed code from TikTok
 }
 
 export function TikTokCard({ tiktokUrl }: TikTokCardProps) {
   const [oembedData, setOembedData] = useState<OEmbedData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchOembed = async () => {
@@ -43,6 +50,21 @@ export function TikTokCard({ tiktokUrl }: TikTokCardProps) {
 
     fetchOembed();
   }, [tiktokUrl]);
+
+  // Effect to load the TikTok embed script when the modal is opened
+  useEffect(() => {
+    if (isModalOpen && oembedData?.html) {
+      const script = document.createElement('script');
+      script.src = 'https://www.tiktok.com/embed.js';
+      script.async = true;
+      document.body.appendChild(script);
+
+      return () => {
+        // Optional: cleanup the script when the component unmounts or modal closes
+        document.body.removeChild(script);
+      };
+    }
+  }, [isModalOpen, oembedData]);
 
   if (isLoading) {
     return (
@@ -74,25 +96,35 @@ export function TikTokCard({ tiktokUrl }: TikTokCardProps) {
   }
 
   return (
-    <div className="p-1">
-      <Card className="h-full flex flex-col group">
-        <a href={tiktokUrl} target="_blank" rel="noopener noreferrer" className="relative block w-full aspect-[9/16] rounded-lg overflow-hidden">
-          <img
-            src={oembedData.thumbnail_url}
-            alt={oembedData.title}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-            loading="lazy"
-          />
-          <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-            <Play className="w-12 h-12 text-white" />
-          </div>
-        </a>
-        <CardContent className="flex-grow flex flex-col justify-center items-center text-center p-4">
-          <p className="text-sm font-semibold mt-2 line-clamp-3" title={oembedData.title}>
-            {oembedData.title || `Vidéo de ${oembedData.author_name}`}
-          </p>
-        </CardContent>
-      </Card>
-    </div>
+    <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+      <DialogTrigger asChild>
+        <div className="p-1 cursor-pointer">
+          <Card className="h-full flex flex-col group">
+            <div className="relative block w-full aspect-[9/16] rounded-lg overflow-hidden">
+              <img
+                src={oembedData.thumbnail_url}
+                alt={oembedData.title}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <Play className="w-12 h-12 text-white" />
+              </div>
+            </div>
+            <CardContent className="flex-grow flex flex-col justify-center items-center text-center p-4">
+              <p className="text-sm font-semibold mt-2 line-clamp-3" title={oembedData.title}>
+                {oembedData.title || `Vidéo de ${oembedData.author_name}`}
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </DialogTrigger>
+      <DialogContent className="p-0 max-w-sm sm:max-w-md md:max-w-lg border-none overflow-hidden">
+        <div 
+          className="tiktok-embed-container"
+          dangerouslySetInnerHTML={{ __html: oembedData.html }} 
+        />
+      </DialogContent>
+    </Dialog>
   );
 }
