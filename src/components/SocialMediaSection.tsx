@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Youtube, Loader2 } from 'lucide-react';
+import { Facebook, Instagram, Youtube, Loader2, YoutubeIcon } from 'lucide-react';
 import { AnimatedSection } from '@/components/ui/AnimatedSection';
 import { useSettings } from '@/hooks/useSettings'; // Import useSettings
 
@@ -25,7 +25,7 @@ export function SocialMediaSection() {
           </h2>
           <div className="flex justify-center space-x-6">
             <a href="https://www.tiktok.com/@nutripack2?_r=1&_t=ZM-92n0mjgyPZD" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary transition-colors">
-              <Youtube className="w-12 h-12" /> {/* Using Youtube for TikTok as we don't have a TikTok icon directly */}
+              <YoutubeIcon className="w-12 h-12" /> {/* Using TikTok for TikTok as we don't have a TikTok icon directly */}
             </a>
             <a href={`https://www.facebook.com/${sanitizedShopName}`} target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary transition-colors">
               <Facebook className="w-12 h-12" />
