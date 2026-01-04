@@ -116,17 +116,16 @@ export default function Products() {
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 mb-6">
               <Zap className="w-4 h-4 text-primary" />
               <span className="text-sm font-medium text-primary">
-                Notre Collection
+                Notre Sélection Bio
               </span>
             </div>
 
             <h1 className="font-display text-5xl md:text-7xl lg:text-8xl mb-4">
-              Tous nos <span className="text-gradient">Produits</span>
+              Tous nos <span className="text-gradient">Produits Bio</span>
             </h1>
 
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-              Parcourez notre sélection complète de maillots, équipements et
-              accessoires sportifs.
+              Parcourez notre sélection complète de produits 100% biologiques.
             </p>
           </div>
         </section>

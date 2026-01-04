@@ -75,8 +75,8 @@ export default function About() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <AnimatedSection>
               <img 
-                src="https://placehold.co/800x800/22c55e/ffffff?text=BIO%20HARVEST" 
-                alt="Récolte biologique et produits frais" 
+                src="/image.png" 
+                alt="Produits bio frais et naturels" 
                 className="rounded-xl shadow-elevated w-full h-auto object-cover"
               />
             </AnimatedSection>
@@ -122,8 +122,8 @@ export default function About() {
             </AnimatedSection>
             <AnimatedSection className="order-first md:order-last">
               <img 
-                src="https://placehold.co/800x800/84cc16/ffffff?text=ORGANIC%20QUALITY" 
-                alt="Produits biologiques de qualité" 
+                src="/quality.png" 
+                alt="Garantie de qualité des produits bio" 
                 className="rounded-xl shadow-elevated w-full h-auto object-cover"
               />
             </AnimatedSection>

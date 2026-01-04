@@ -1,5 +1,5 @@
 // src/components/LocalSeoSection.tsx
-import { MapPin, Sparkles, Loader2 } from 'lucide-react';
+import { MapPin, Sparkles, Loader2, Leaf } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from './ui/button';
 import { AnimatedSection } from './ui/AnimatedSection';
@@ -8,7 +8,7 @@ import { useSettings } from '@/hooks/useSettings'; // Import useSettings
 export function LocalSeoSection() {
   const { data: settings, isLoading } = useSettings(); // Fetch settings
 
-  const shopName = settings?.shop_name || "Tayba Market";
+  const shopName = settings?.shop_name || "NutriPack";
 
   if (isLoading) {
     return (
@@ -27,15 +27,15 @@ export function LocalSeoSection() {
               <Sparkles className="w-10 h-10 text-primary" />
             </div>
             <h2 className="font-display text-4xl md:text-5xl mb-4">
-              Tayba Market : Votre supermarché à Lomé, <span className="text-gradient">Togo</span>
+              NutriPack : Votre Source <span className="text-gradient">d'Aliments Sains</span>
             </h2>
             <p className="text-muted-foreground text-lg max-w-3xl mx-auto mb-8">
-              Chez {shopName}, situé à Lomé, non loin du marché d'Agbalepedogan, nous vous offrons une sélection variée de produits alimentaires, cosmétiques et bien d'autres, avec une spécialité de produits venant d'Allemagne. Découvrez l'excellence à portée de main !
+              Chez NutriPack, votre marché en ligne dédié à une alimentation saine et naturelle. Découvrez une sélection variée de produits alimentaires 100% biologiques, fraîchement choisis pour leur qualité et leur saveur authentique. Le meilleur de la nature, directement chez vous !
             </p>
             <Link to="/contact">
               <Button size="lg">
-                <Sparkles className="w-5 h-5 mr-2" />
-                Découvrir Nos Conseils
+                <Leaf className="w-5 h-5 mr-2" />
+                Joignez-Nous pour une Vie Plus Saine
               </Button>
             </Link>
           </div>

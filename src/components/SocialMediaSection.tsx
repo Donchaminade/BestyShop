@@ -24,7 +24,7 @@ export function SocialMediaSection() {
             Suivez <span className="text-gradient">{shopName}</span> sur les réseaux sociaux
           </h2>
           <div className="flex justify-center space-x-6">
-            <a href="https://www.tiktok.com/@nutripack2" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary transition-colors">
+            <a href="https://www.tiktok.com/@nutripack2?_r=1&_t=ZM-92n0mjgyPZD" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary transition-colors">
               <Youtube className="w-12 h-12" /> {/* Using Youtube for TikTok as we don't have a TikTok icon directly */}
             </a>
             <a href={`https://www.facebook.com/${sanitizedShopName}`} target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary transition-colors">

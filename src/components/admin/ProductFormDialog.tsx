@@ -12,7 +12,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription, // Added
+  DialogDescription,
 } from '@/components/ui/dialog';
 import {
   Select,
@@ -24,13 +24,26 @@ import {
 import { Loader2, Upload, X, ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
 
-const predefinedCategories: ProductCategory[] = ['Maquillage', 'Soins Visage', 'Soins Corps', 'Parfums', 'Accessoires Beauté', 'Cheveux']
+const predefinedCategories: ProductCategory[] = [
+  'Farines bio',
+  'Céréales bio',
+  'Légumineuses bio',
+  'Plantes et fleurs pour boissons naturelles',
+  'Épices et condiments bio',
+  'Racines et tubercules transformés',
+  'Fruits séchés et dérivés',
+  'Produits de cueillette traditionnelle',
+  'Huiles végétales bio',
+  'Sucres et édulcorants naturels',
+  'Produits bien-être naturels',
+  'Produits cosmétiques naturels bio'
+];
 
 interface ProductFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   product: Product | null;
-  isReadOnly?: boolean; // New prop for read-only mode
+  isReadOnly?: boolean;
 }
 
 export function ProductFormDialog({ open, onOpenChange, product, isReadOnly = false }: ProductFormDialogProps) {
@@ -45,42 +58,31 @@ export function ProductFormDialog({ open, onOpenChange, product, isReadOnly = fa
     promo_price: product?.promo_price || null,
     promo_active: product?.promo_active || false,
     image_url: product?.image_url || '',
-    category: product?.category || 'Maquillage',
+    category: product?.category || 'Farines bio', // Default to a new category
   });
   const [uploading, setUploading] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState(product?.image_url || '');
-  const [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
-  const [newCategoryName, setNewCategoryName] = useState('');
+  const [previewUrl, setPreviewUrl] = useState('');
 
   const isEditing = !!product;
 
   useEffect(() => {
-    if (open && product) { // Only update form data if dialog is opened and product is provided
-      setFormData({
-        name: product.name,
-        description: product.description || '',
-        price: product.price,
-        promo_price: product.promo_price,
-        promo_active: product.promo_active,
-        image_url: product.image_url || '',
-        category: product.category,
-      });
-      setPreviewUrl(product.image_url || '');
-      // If editing an existing product whose category is not in predefined, set to 'Other' mode
-      if (!predefinedCategories.includes(product.category) && product.category !== '_NEW_CATEGORY_') {
-              setShowNewCategoryInput(true);
-              setNewCategoryName(product.category);
-              setFormData(prev => ({ ...prev, category: '_NEW_CATEGORY_' as ProductCategory }));
-            } else {
-              setShowNewCategoryInput(false);
-              setNewCategoryName('');
-              setFormData(prev => ({ ...prev, category: product.category })); // Ensure category is set correctly for predefined
-            }
-          } else if (open && !product) { // If opening for new product
-      resetForm();
+    if (open) {
+      if (product) {
+        setFormData({
+          name: product.name,
+          description: product.description || '',
+          price: product.price,
+          promo_price: product.promo_price,
+          promo_active: product.promo_active,
+          image_url: product.image_url || '',
+          // If the product's category is not in our list, default to the first one
+          category: predefinedCategories.includes(product.category) ? product.category : 'Fruits et Légumes',
+        });
+        setPreviewUrl(product.image_url || '');
+      } else {
+        resetForm();
+      }
     }
-    // The resetForm() on close is explicitly handled by the parent component (Admin.tsx)
-    // in its handleProductFormClose function, which sets isProductFormOpen to false and calls resetForm
   }, [open, product]);
 
 
@@ -92,22 +94,20 @@ export function ProductFormDialog({ open, onOpenChange, product, isReadOnly = fa
       promo_price: null,
       promo_active: false,
       image_url: '',
-      category: 'Maquillage',
+      category: 'Fruits et Légumes',
     });
     setPreviewUrl('');
-    setShowNewCategoryInput(false);
-    setNewCategoryName('');
   }
 
   function handleOpenChange(open: boolean) {
-    if (!open) { // Only reset form if dialog is closing
+    if (!open) {
       resetForm();
     }
     onOpenChange(open);
   }
 
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    if (isReadOnly) return; // Prevent upload in read-only mode
+    if (isReadOnly) return;
 
     const file = e.target.files?.[0];
     if (!file) return;
@@ -151,7 +151,7 @@ export function ProductFormDialog({ open, onOpenChange, product, isReadOnly = fa
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (isReadOnly) return; // Prevent submission in read-only mode
+    if (isReadOnly) return;
 
     if (!formData.name.trim()) {
       toast.error('Le nom du produit est requis');
@@ -163,28 +163,16 @@ export function ProductFormDialog({ open, onOpenChange, product, isReadOnly = fa
       return;
     }
 
-    let finalCategory: ProductCategory;
-
-    if (showNewCategoryInput) {
-        if (!newCategoryName.trim()) {
-            toast.error('Veuillez entrer le nom de la nouvelle catégorie');
-            return;
-        }
-        finalCategory = newCategoryName as ProductCategory;
-    } else if (formData.category && formData.category !== '_NEW_CATEGORY_') {
-        finalCategory = formData.category;
-    } else {
-        toast.error('Veuillez sélectionner ou entrer une catégorie');
-        return;
+    if (!formData.category || !predefinedCategories.includes(formData.category)) {
+      toast.error('Veuillez sélectionner une catégorie valide');
+      return;
     }
 
-
     try {
-      const dataToSubmit = { ...formData, category: finalCategory };
       if (isEditing && product) {
-        await updateProduct.mutateAsync({ id: product.id, ...dataToSubmit });
+        await updateProduct.mutateAsync({ id: product.id, ...formData });
       } else {
-        await createProduct.mutateAsync(dataToSubmit);
+        await createProduct.mutateAsync(formData);
       }
       handleOpenChange(false);
     } catch (error) {
@@ -207,12 +195,13 @@ export function ProductFormDialog({ open, onOpenChange, product, isReadOnly = fa
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6 py-4">
-          {/* Image Upload */}
+          
+          {/* (Image, Name, Description parts are the same) */}
           <div className="space-y-2">
             <Label>Image du produit</Label>
             <div 
               className="relative border-2 border-dashed border-border rounded-xl p-4 hover:border-primary/50 transition-colors cursor-pointer"
-              onClick={() => !isReadOnly && fileInputRef.current?.click()} // Disable click in read-only
+              onClick={() => !isReadOnly && fileInputRef.current?.click()}
             >
               {previewUrl ? (
                 <div className="relative aspect-video rounded-lg overflow-hidden">
@@ -221,7 +210,7 @@ export function ProductFormDialog({ open, onOpenChange, product, isReadOnly = fa
                     alt="Preview" 
                     className="w-full h-full object-cover"
                   />
-                  {!isReadOnly && ( // Hide delete button in read-only
+                  {!isReadOnly && (
                     <button
                       type="button"
                       onClick={(e) => {
@@ -252,25 +241,23 @@ export function ProductFormDialog({ open, onOpenChange, product, isReadOnly = fa
                 accept="image/*"
                 onChange={handleImageUpload}
                 className="hidden"
-                disabled={isReadOnly} // Disable input in read-only
+                disabled={isReadOnly}
               />
             </div>
           </div>
 
-          {/* Name */}
           <div className="space-y-2">
             <Label htmlFor="name">Nom du produit *</Label>
             <Input
               id="name"
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              placeholder="Maillot Real Madrid Home"
+              placeholder="Ex: Tomates fraîches de la ferme"
               required
-              disabled={isReadOnly} // Disable input in read-only
+              disabled={isReadOnly}
             />
           </div>
 
-          {/* Description */}
           <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
             <Textarea
@@ -279,29 +266,21 @@ export function ProductFormDialog({ open, onOpenChange, product, isReadOnly = fa
               onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
               placeholder="Description du produit..."
               rows={3}
-              disabled={isReadOnly} // Disable textarea in read-only
+              disabled={isReadOnly}
             />
           </div>
-
+          
           {/* Category */}
           <div className="space-y-2">
             <Label>Catégorie</Label>
             <Select
-              value={showNewCategoryInput ? '_NEW_CATEGORY_' : formData.category}
-              onValueChange={(value: ProductCategory | string) => {
-                if (!isReadOnly) { // Only allow change if not read-only
-                  if (value === '_NEW_CATEGORY_') {
-                    setShowNewCategoryInput(true);
-                    setNewCategoryName(''); // Clear previous new category name
-                    setFormData(prev => ({ ...prev, category: '' as ProductCategory })); // Temporarily set category to empty
-                  } else {
-                    setShowNewCategoryInput(false);
-                    setNewCategoryName('');
-                    setFormData(prev => ({ ...prev, category: value as ProductCategory }));
-                  }
+              value={formData.category}
+              onValueChange={(value: ProductCategory) => {
+                if (!isReadOnly) {
+                  setFormData(prev => ({ ...prev, category: value }));
                 }
               }}
-              disabled={isReadOnly} // Disable select in read-only
+              disabled={isReadOnly}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Sélectionner une catégorie" />
@@ -310,26 +289,11 @@ export function ProductFormDialog({ open, onOpenChange, product, isReadOnly = fa
                 {predefinedCategories.map((cat) => (
                   <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                 ))}
-                <SelectItem value="_NEW_CATEGORY_">Autre (préciser)</SelectItem>
               </SelectContent>
             </Select>
-            {showNewCategoryInput && (
-              <Input
-                className="mt-2"
-                placeholder="Entrez une nouvelle catégorie"
-                value={newCategoryName}
-                onChange={(e) => setNewCategoryName(e.target.value)}
-                disabled={isReadOnly} // Disable input in read-only
-              />
-            )}
-            {!predefinedCategories.includes(formData.category) && formData.category && !showNewCategoryInput && (
-              <p className="text-sm text-muted-foreground mt-2">
-                Catégorie actuelle : <span className="font-semibold">{formData.category}</span> (non listée)
-              </p>
-            )}
           </div>
 
-          {/* Price */}
+          {/* (Price, Promo, Submit parts are the same) */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="price">Prix (FCFA) *</Label>
@@ -341,7 +305,7 @@ export function ProductFormDialog({ open, onOpenChange, product, isReadOnly = fa
                 placeholder="15000"
                 min="0"
                 required
-                disabled={isReadOnly} // Disable input in read-only
+                disabled={isReadOnly}
               />
             </div>
             <div className="space-y-2">
@@ -350,18 +314,17 @@ export function ProductFormDialog({ open, onOpenChange, product, isReadOnly = fa
                 id="promo_price"
                 type="number"
                 value={formData.promo_price || ''}
-                onChange={(e) => setFormData(prev => ({ 
-                  ...prev, 
-                  promo_price: e.target.value ? parseInt(e.target.value) : null 
+                onChange={(e) => setFormData(prev => ({
+                  ...prev,
+                  promo_price: e.target.value ? parseInt(e.target.value) : null
                 }))}
                 placeholder="12000"
                 min="0"
-                disabled={isReadOnly} // Disable input in read-only
+                disabled={isReadOnly}
               />
             </div>
           </div>
 
-          {/* Promo Active */}
           <div className="flex items-center justify-between rounded-lg border border-border p-4">
             <div>
               <Label htmlFor="promo_active" className="text-base">Promotion active</Label>
@@ -372,12 +335,11 @@ export function ProductFormDialog({ open, onOpenChange, product, isReadOnly = fa
             <Switch
               id="promo_active"
               checked={formData.promo_active}
-              onCheckedChange={(checked) => !isReadOnly && setFormData(prev => ({ ...prev, promo_active: checked }))} // Disable in read-only
-              disabled={isReadOnly} // Disable switch in read-only
+              onCheckedChange={(checked) => !isReadOnly && setFormData(prev => ({ ...prev, promo_active: checked }))}
+              disabled={isReadOnly}
             />
           </div>
 
-          {/* Submit / Close */}
           <div className="flex gap-3 pt-4">
             <Button
               type="button"
@@ -387,7 +349,7 @@ export function ProductFormDialog({ open, onOpenChange, product, isReadOnly = fa
             >
               {isReadOnly ? 'Fermer' : 'Annuler'}
             </Button>
-            {!isReadOnly && ( // Hide submit button in read-only
+            {!isReadOnly && (
               <Button type="submit" className="flex-1" disabled={isLoading}>
                 {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                 {isEditing ? 'Mettre à jour' : 'Créer le produit'}

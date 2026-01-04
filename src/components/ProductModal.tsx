@@ -66,7 +66,7 @@ export function ProductModal({ product, open, onOpenChange }: ProductModalProps)
             </DialogHeader>
 
             <p className="text-muted-foreground text-sm mt-4 flex-grow">
-              {product.description || 'Un produit de qualité pour les vrais passionnés de football.'}
+              {product.description || 'Un produit frais et de qualité, cultivé avec soin pour une saveur authentique.'}
             </p>
 
             {/* Price */}
