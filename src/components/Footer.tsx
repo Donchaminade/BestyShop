@@ -9,7 +9,7 @@ export function Footer() {
   const logoUrl = settings?.logo_url || "/logo.jpeg";
   const whatsappNumber = settings?.whatsapp_number || '+22899181626';
 
-  const email = 'contact@nutripack.com';
+  const email = 'contactnutripack@gmail.com';
   const openingHours = 'Disponible en ligne 24h/24, 7j/7';
 
   if (isLoading) {
