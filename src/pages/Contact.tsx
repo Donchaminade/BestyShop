@@ -34,8 +34,8 @@ export default function Contact() {
 
   // Fallback values if settings are not loaded or error
   const shopName = settings?.shop_name || "NutriPack";
-  const whatsappNumber = settings?.whatsapp_name || '+22899181626'; // Keeping WhatsApp number
-  const emailAddress = 'nutipack1@gmail.com.com'; // New email
+  const whatsappNumber = settings?.whatsapp_name || '+22893004356'; // Keeping WhatsApp number
+  const emailAddress = 'contactnutripack@gmail.com'; // New email
   const locationText = 'Votre marché de produits bio en ligne'; // New location
   const openingHoursText = 'Disponible en ligne 24h/24, 7j/7'; // New opening hours
 
